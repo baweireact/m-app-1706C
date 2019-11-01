@@ -1,0 +1,13 @@
+.group {
+    line-height: 50px;
+}
+
+.group label{
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+}
+
+.btn{
+    padding-left: 50px;
+}

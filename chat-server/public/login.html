@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>注册</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <h1 id="userName"></h1>
+    <form action="###">
+        <div class="group">
+            <label for="username">用户名：</label>
+            <input type="text" id="username" />
+        </div>
+        <div class="group">
+            <label for="userpWd">密码：</label>
+            <input id="userpwd" type="password" />
+        </div>
+        <div class="btn">
+            <input id="registerbtn" type="button" value="登录" />
+        </div>
+    </form>
+    <div>
+        <h3>动态</h3>
+        <ul id="dynamicList">    
+            
+        </ul>
+    </div>
+    <div>
+        <button id="sendWord">发布动态</button>
+        <button id="sendWord">评论</button>
+
+    </div>
+    <script src="axios.min.js"></script>
+    <script src="login.js"></script>
+</body>
+</html>

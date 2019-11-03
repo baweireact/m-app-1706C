@@ -1,0 +1,35 @@
+import axios from 'axios'
+import urls from './urls'
+
+console.log(process)
+if (process.env.NODE_ENV === 'development') {
+  console.log('env', process.env.NODE_ENV)
+  axios.defaults.baseURL = 'http://localhost:82'
+}
+
+axios.interceptors.request.use((config) => {
+  config.headers.token = localStorage.getItem('token')
+  return config
+})
+
+axios.interceptors.response.use((res) => {
+  if (res.data.code === 400) {
+    alert(res.data.message)
+  } else if (res.data.code === 403) {
+    window.location.href = '/login'
+  }
+  return res
+})
+
+const common = async (config) => {
+  let response = await axios(config)
+  return response.data
+}
+
+export default {
+  login: (data) => common({ url: urls.login, data, method: 'post' }),
+  register: (data) => common({ url: urls.register, data, method: 'post' }),
+  modifyPassword: (data) => common({ url: urls.modifyPassword, data, method: 'post' }),
+  getUserInfo: () => common({ url: urls.getUserInfo }),
+  quit: () => common({ url: urls.quit })
+}

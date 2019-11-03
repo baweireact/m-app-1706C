@@ -26,6 +26,7 @@ let secret = 'xxx'
 
 const app = express()
 
+//如果没有启动redis,会报错，启动redis方法，在cd到redis的安装目录，执行redis-server.exe redis.windows.conf
 const client = redis.createClient()
 client.on('error', err => {
   console.log('redis错误：' + err)
@@ -123,17 +124,48 @@ app.post('/api/register', (req, res) => {
 })
 
 //修改密码
-app.post('/api/modify_password', checkTokenByMiddleware, async (req, res) => {
+app.post('/api/modify_password', checkTokenByMiddleware, (req, res) => {
   let token = req.headers.token
-  let { password } = req.body
+  let { oldPassword, newPassword } = req.body
+  let id = jwt.decode(token, secret)
+  let index = userList.findIndex(item => item.id === id)
+  if (userList[index].password === oldPassword) {
+    userList[index].password = newPassword
+    res.send({
+      code: 200,
+      data: userList,
+      message: '修改成功,请重新登录'
+    })
+  } else {
+    res.send({
+      code: 400,
+      message: '原密码错误'
+    })
+  }
+})
+
+//获取用户信息
+app.get('/api/get_user_info', checkTokenByMiddleware, (req, res) => {
+  let token = req.headers.token
   let id = jwt.decode(token, secret)
   console.log(id)
-  let index = userList.findIndex(item => item.id === id)
-  userList[index].password = password
+  let user = userList.find(item => item.id === id)
+  let userInfo = JSON.parse(JSON.stringify(user))
+  delete userInfo.password
   res.send({
     code: 200,
-    data: userList,
-    message: '修改成功'
+    data: userInfo,
+    message: '用户信息'
+  })
+})
+
+//退出
+app.get('/api/quit', (req, res) => {
+  let token = req.headers.token
+  client.del(token)
+  res.send({
+    code: 200,
+    message: '退出'
   })
 })
 

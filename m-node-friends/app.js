@@ -1,0 +1,151 @@
+const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const history = require('connect-history-api-fallback')
+const uuidv1 = require('uuid/v1')
+const jwt = require('jwt-simple')
+const redis = require('redis')
+
+//用户列表
+let userList = [{
+  id: '001',
+  username: 'admin',
+  password: '123456'
+}, {
+  id: '002',
+  username: 'xu',
+  password: '123'
+}, {
+  id: '003',
+  username: 'a',
+  password: '123456'
+}]
+
+//token加密密码
+let secret = 'xxx'
+
+const app = express()
+
+const client = redis.createClient()
+client.on('error', err => {
+  console.log('redis错误：' + err)
+})
+
+//跨域
+app.use(cors())
+//解析post请求
+
+// parse application/json
+app.use(bodyParser.json())
+//let jsonParser = bodyParser.json()
+
+//处理react前端路由(BrowserRoute)，vue前端路由(mode:history)，注意：开启后无法用postman和浏览器地址栏调试get接口
+//app.use(history())
+
+//静态web服务器
+app.use(express.static(__dirname + '/public'))
+
+//通过中间件检查登录是否过期，并自动续期
+const checkTokenByMiddleware = (req, res, next) => {
+  let token = req.headers.token
+  client.get(token, (err, response) => {
+    if (response) {
+      client.set(token, token, 'EX', 60)
+      next()
+    } else {
+      res.send({
+        code: 403,
+        message: '登录过期'
+      })
+    }
+  })
+  console.log(2)
+}
+
+//登录
+app.post('/api/login', (req, res) => {
+  let { username, password } = req.body
+  let user = userList.find(item => item.username === username)
+  if (user) {
+    if (user.password === password) {
+      let token = jwt.encode(user.id, secret)
+      client.set(token, token, 'EX', 60)
+      res.send({
+        code: 200,
+        data: {
+          username,
+          token
+        },
+        message: '登录成功'
+      })
+    } else {
+      res.send({
+        code: 400,
+        message: '密码错误'
+      })
+    }
+  } else {
+    res.send({
+      code: 400,
+      message: '用户名不存在'
+    })
+  }
+})
+
+//注册
+app.post('/api/register', (req, res) => {
+  let { username, password } = req.body
+  console.log(username, password)
+  let user = userList.find(item => item.username === username)
+  if (user) {
+    res.send({
+      code: 400,
+      message: '用户名已存在'
+    })
+  } else {
+    let id = uuidv1()
+    userList.push({
+      id,
+      username,
+      password,
+    })
+    let token = jwt.encode(id, secret)
+    client.set(token, token, 'EX', 60)
+    res.send({
+      code: 200,
+      data: {
+        userList,
+        token
+      },
+      message: '注册成功'
+    })
+  }
+})
+
+//修改密码
+app.post('/api/modify_password', checkTokenByMiddleware, async (req, res) => {
+  let token = req.headers.token
+  let { password } = req.body
+  let id = jwt.decode(token, secret)
+  console.log(id)
+  let index = userList.findIndex(item => item.id === id)
+  userList[index].password = password
+  res.send({
+    code: 200,
+    data: userList,
+    message: '修改成功'
+  })
+})
+
+//动态路由
+app.get('/api/test/:id', (req, res) => {
+  let { id } = req.params
+  res.send({
+    code: 200,
+    data: id,
+    message: '动态路由测试'
+  })
+})
+
+app.listen(82)
+console.log(82)

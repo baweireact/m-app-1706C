@@ -1,9 +1,9 @@
 const urls = {
-  login: '/api/login',
-  register: '/api/register',
-  modifyPassword: '/api/modify_password',
-  getUserInfo: '/api/get_user_info',
-  quit: '/api/quit'
+  login: '/api/user/login',
+  register: '/api/user/register',
+  modifyPassword: '/api/user/modify_password',
+  getUserInfo: '/api/user/get_user_info',
+  quit: '/api/user/quit'
 }
 
 export default urls

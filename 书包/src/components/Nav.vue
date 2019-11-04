@@ -14,15 +14,19 @@
 export default {
   computed: {
     navList() {
+      //从仓库里取数据
       return this.$store.state.navList;
     },
     currentId() {
+      //从仓库里取数据
       return this.$store.state.currentId
     }
   },
   methods: {
     handleNav(currentId) {
-      this.$store.commit({ type: 'setCurrentId', currentId })
+      //高亮
+      this.$store.commit({ type: 'setState', key: 'currentId', value: currentId })
+      //更新列表
       this.$store.dispatch({ type: 'getList' })
     }
   }

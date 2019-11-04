@@ -33,7 +33,7 @@ export default {
     }
   },
   mounted() {
-    let { id } = this.$route.params;
+    let { id } = this.$route.query;
     Api.getDetail(`?id=${id}`).then(res => {
       if (res.code === 200) {
         this.detail = res.data;

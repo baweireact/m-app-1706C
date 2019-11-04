@@ -4,6 +4,7 @@ import Login from '../views/Login'
 import Index from '../views/Index'
 import Home from '../views/Home'
 import MyBook from '../views/MyBook'
+import Detail from '../views/Detail'
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,9 @@ const routes = [
     }, {
       path: '/index/my_book',
       component: MyBook,
+    }, {
+      path: '/detail/:id',
+      component: Detail
     }]
   }
 ]

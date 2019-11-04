@@ -17,6 +17,9 @@ let userList = [{
   password: '123456'
 }]
 
+//消息列表
+let messageList = []
+
 //token加密密码
 let secret = 'xxx'
 
@@ -149,6 +152,48 @@ const quit = (req, res) => {
   })
 }
 
+//消息列表
+const getMessageList = (req, res) => {
+  res.send({
+    code: 200,
+    data: messageList,
+    message: '消息列表'
+  })
+}
+
+//发布消息
+const addMessage = (req, res) => {
+  let token = req.headers.token
+  let id = jwt.decode(token, secret)
+  console.log(id)
+  let user = userList.find(item => item.id === id)
+  let { message } = req.body
+  messageList.push({
+    id: Date.now(),
+    message,
+    username: user.username,
+    createTime: Date.now(),
+    like: [],
+    comment: [],
+  })
+  res.send({
+    code: 200,
+    data: messageList,
+    message: '发布成功'
+  })
+}
+
+//更新消息
+const updateMessage = (req, res) => {
+  let { newMessageList } = req.body
+  messageList = newMessageList
+  res.send({
+    code: 200,
+    data: messageList,
+    message: '更新成功'
+  })
+}
+
 module.exports = {
   checkTokenByMiddleware,
   login,
@@ -156,4 +201,7 @@ module.exports = {
   modifyPassword,
   getUserInfo,
   quit,
+  getMessageList,
+  addMessage,
+  updateMessage,
 }

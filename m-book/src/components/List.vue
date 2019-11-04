@@ -39,7 +39,8 @@ export default {
       })
     },
     handleDetail(id) {
-      this.$router.push(`/detail/${id}`)
+      //this.$router.push(`/detail/${id}`)
+      this.$router.push({ path: '/detail', query: { id }})
     }
   }
 }

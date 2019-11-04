@@ -14,8 +14,11 @@ export default {
     Nav,
     List
   },
+  //挂载完，刷新时
   mounted() {
+    //触发导航接口
     this.$store.dispatch({ type: 'getNav' })
+    //触发列表接口
     this.$store.dispatch({ type: 'getList' })
   }
 }

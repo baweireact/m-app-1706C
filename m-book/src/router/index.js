@@ -30,7 +30,7 @@ const routes = [
         needLogin: true
       }
     }, {
-      path: '/detail/:id',
+      path: '/detail',
       component: Detail
     }]
   }

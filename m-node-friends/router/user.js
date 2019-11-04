@@ -17,6 +17,15 @@ router.get('/get_user_info', userController.checkTokenByMiddleware, userControll
 //退出
 router.get('/quit', userController.quit)
 
+//消息列表
+router.get('/get_message_list', userController.getMessageList)
+
+//发布消息
+router.post('/add_message', userController.addMessage)
+
+//更新消息
+router.post('/update_message', userController.updateMessage)
+
 module.exports = router
 
 

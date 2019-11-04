@@ -8,38 +8,45 @@ export default new Vuex.Store({
   state: {
     navList: [],
     currentId: 0,
-    currentList: []
+    currentList: [],
+    myBook: []
   },
   mutations: {
-    setNav(state, payload) {
-      state.navList = payload.navList
-    },
-    setCurrentId(state, payload) {
-      state.currentId = payload.currentId
-    },
-    setCurrentList(state, payload) {
-      state.currentList = payload.currentList
-    },
+    //key是数据名字，value是值
     setState(state, payload) {
       state[payload.key] = payload.value
     }
   },
   actions: {
+    //导航
     getNav({ commit }) {
       axios({
         url: '/api/nav'
       }).then(res => {
         if (res.data.code === 200) {
-          commit({ type: 'setNav', navList: res.data.data })
+          //提交mutations，更改store里的数据
+          commit({ type: 'setState', key: 'navList',  value: res.data.data })
         }
       })
     },
+    //列表接口
     getList({ state, commit }) {
       axios({
         url: `/api/list?id=${state.currentId}`
       }).then(res => {
         if (res.data.code === 200) {
+          //提交mutations，更改store里的数据
           commit({ type: 'setState', key: 'currentList', value: res.data.data })
+        }
+      })
+    },
+    //获取书包
+    getMyBook({ commit }) {
+      axios({
+        url: '/api/my_book'
+      }).then(res => {
+        if (res.data.code === 200) {
+          commit({ type: 'setState', key: 'myBook', value: res.data.data })
         }
       })
     }

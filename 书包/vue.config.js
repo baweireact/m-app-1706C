@@ -12,6 +12,8 @@ let userList = [{
   password: '123'
 }]
 
+let myBook = []
+
 module.exports = {
   lintOnSave: false,
   devServer: {
@@ -59,10 +61,54 @@ module.exports = {
       app.get('/api/list', (req, res) => {
         let { id } = req.query
         let list = bookMallData.find(item => item.id == id).list
+        //添加一个字段，标识收藏和已收藏
+        list.forEach(item => {
+          item.is_in_my_book = myBook.findIndex(book => book.id === item.id) >= 0
+        })
         res.send({
           code: 200,
           data: list,
           message: '列表'
+        })
+      })
+
+      //详情
+      app.get('/api/detail', (req, res) => {
+        let { id } = req.query
+        bookMallDetailData.forEach(item => {
+          item.list.forEach(book => {
+            if (book.id == id) {
+              //添加一个字段，标识收藏和已收藏
+              book.is_in_my_book = myBook.findIndex(bookItem => bookItem.id === book.id) >= 0
+              res.send({
+                code: 200,
+                data: book,
+                message: '详情'
+              })
+            }
+          })
+        })
+      })
+
+      //添加
+      app.post('/api/add', (req, res) => {
+        //解构出来书的信息
+        let { book } = req.body
+        //列表页和详情页都调用这个接口
+        myBook.push(book)  //添加到数组里
+        res.send({
+          code: 200,
+          data: myBook,
+          message: '添加成功'
+        })
+      })
+
+      //获取书包
+      app.get('/api/my_book', (req, res) => {
+        res.send({
+          code: 200,
+          data: myBook,
+          message: '书包'
         })
       })
     }

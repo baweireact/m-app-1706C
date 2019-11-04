@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     navList: [],
     currentId: 0,
-    currentList: []
+    currentList: [],
+    myBook: []
   },
   mutations: {
     //key是数据名字，value是值
@@ -36,6 +37,16 @@ export default new Vuex.Store({
         if (res.data.code === 200) {
           //提交mutations，更改store里的数据
           commit({ type: 'setState', key: 'currentList', value: res.data.data })
+        }
+      })
+    },
+    //获取书包
+    getMyBook({ commit }) {
+      axios({
+        url: '/api/my_book'
+      }).then(res => {
+        if (res.data.code === 200) {
+          commit({ type: 'setState', key: 'myBook', value: res.data.data })
         }
       })
     }

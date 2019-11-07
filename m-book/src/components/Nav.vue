@@ -1,12 +1,12 @@
 <template>
-  <div>
-    <span
+  <div class="m-nav-warp">
+    <div
       v-for="item in navList"
       :key="item.id"
       class="m-nav-item"
       :class="{active: currentId === item.id}"
       @click="handleNav(item.id)"
-    >{{item.title}}</span>
+    >{{item.title}}</div>
   </div>
 </template>
 
@@ -23,7 +23,7 @@ export default {
   methods: {
     handleNav(id) {
       this.$store.commit({ type: 'setState', key: 'currentId', value: id })
-      this.$store.dispatch({ type: 'getList', id })
+      document.getElementById(id).scrollIntoView(true)
     }
   }
 };

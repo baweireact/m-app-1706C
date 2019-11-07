@@ -30,7 +30,7 @@ app.use(cors())
 
 // parse application/json
 app.use(bodyParser.json())
-app.use(history())
+//app.use(history())
 
 // parse application/x-www-form-urlencoded
 //app.use(bodyParser.urlencoded({ extended: false }))
@@ -88,6 +88,21 @@ app.get('/api/list', (req, res) => {
     code: 200,
     data: list,
     message: '列表'
+  })
+})
+
+//用于楼层的数据，包括导航和列表全部数据
+app.get('/api/list_all', (req, res) => {
+  let data = bookMallData
+  data.forEach(categoryItem => {
+    categoryItem.list.forEach(item => {
+      item.is_in_my_book = myBook.findIndex(book => book.id === item.id) >= 0
+    })
+  })
+  res.send({
+    code: 200,
+    data,
+    message: '楼层列表'
   })
 })
 

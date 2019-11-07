@@ -98,8 +98,8 @@ const register = (req, res) => {
     res.send({
       code: 200,
       data: {
-        userList,
-        token
+        token,
+        username
       },
       message: '注册成功'
     })
@@ -168,7 +168,7 @@ const addMessage = (req, res) => {
   console.log(id)
   let user = userList.find(item => item.id === id)
   let { message } = req.body
-  messageList.push({
+  messageList.unshift({
     id: Date.now(),
     message,
     username: user.username,
@@ -194,6 +194,54 @@ const updateMessage = (req, res) => {
   })
 }
 
+//删除消息
+const deleteMessage = (req, res) => {
+  let { id } = req.body
+  let index = messageList.findIndex(itme => itme.id === id)
+  messageList.splice(index, 1)
+  res.send({
+    code: 200,
+    data: messageList,
+    message: '删除成功'
+  })
+}
+
+//点赞
+const like = (req, res) => {
+  let { id, username } = req.body
+  let index = messageList.findIndex(itme => itme.id === id)
+  messageList[index].like.push(username)
+  res.send({
+    code: 200,
+    data: messageList,
+    message: '点赞成功'
+  })
+}
+
+//取消点赞
+const cancelLike = (req, res) => {
+  let { id, username } = req.body
+  let index = messageList.findIndex(itme => itme.id === id)
+  messageList[index].like = messageList[index].like.filter(item => item !== username)
+  res.send({
+    code: 200,
+    data: messageList,
+    message: '点赞成功'
+  })
+}
+
+//评论
+const comment = (req, res) => {
+  let { id, comment } = req.body
+  let index = messageList.findIndex(itme => itme.id === id)
+  messageList[index].comment.push(comment)
+  res.send({
+    code: 200,
+    data: messageList,
+    message: '评论成功'
+  })
+}
+
 module.exports = {
   checkTokenByMiddleware,
   login,
@@ -204,4 +252,8 @@ module.exports = {
   getMessageList,
   addMessage,
   updateMessage,
+  deleteMessage,
+  like,
+  cancelLike,
+  comment,
 }

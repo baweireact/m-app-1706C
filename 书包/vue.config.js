@@ -111,6 +111,17 @@ module.exports = {
           message: '书包'
         })
       })
+
+      //更新书包
+      app.post('/api/update', (req, res) => {
+        let { myBookNew } = req.body
+        myBook = myBookNew
+        res.send({
+          code: 200,
+          data: myBook,
+          message: '更新完成了'
+        })
+      })
     }
   }
 }

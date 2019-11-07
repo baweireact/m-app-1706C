@@ -16,6 +16,7 @@ axios.interceptors.response.use((res) => {
   if (res.data.code === 400) {
     alert(res.data.message)
   } else if (res.data.code === 403) {
+    alert('登录过期')
     window.location.href = '/login'
   }
   return res
@@ -31,5 +32,8 @@ export default {
   register: (data) => common({ url: urls.register, data, method: 'post' }),
   modifyPassword: (data) => common({ url: urls.modifyPassword, data, method: 'post' }),
   getUserInfo: () => common({ url: urls.getUserInfo }),
-  quit: () => common({ url: urls.quit })
+  quit: () => common({ url: urls.quit }),
+  getMessageList: () => common({ url: urls.getMessageList }),
+  addMessage: (data) => common({ url: urls.addMessage, data, method: 'post' }),
+  updateMessage: (data) => common({ url: urls.updateMessage, data, method: 'post' })
 }

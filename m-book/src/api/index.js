@@ -7,6 +7,7 @@ if (process.env.NODE_ENV === 'development') {
   axios.defaults.baseURL = 'http://localhost'
 }
 
+console.log(axios)
 
 axios.interceptors.request.use((config) => {
   return config
@@ -28,8 +29,9 @@ export default {
   login: (data) => common({ url: urls.login, data, method: 'post' }),
   getNav: () => common({ url: urls.getNav }),
   getList: (url) => common({ url: urls.getList + url }),
+  getListAll: () => common({ url: urls.getListAll }),
   updateMyBook: (data) => common({ url: urls.updateMyBook, data, method: 'post' }),
   add:(data) => common({ url: urls.add, data, method: 'post' }),
   getMyBook: () => common({ url: urls.getMyBook }),
-  getDetail: (url) => common({ url: urls.getDetail + url })
+  getDetail: (url) => common({ url: urls.getDetail + url }),
 }

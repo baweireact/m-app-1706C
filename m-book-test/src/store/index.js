@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
+import Api from '../api'
 
 Vue.use(Vuex)
 
@@ -20,33 +20,27 @@ export default new Vuex.Store({
   actions: {
     //导航
     getNav({ commit }) {
-      axios({
-        url: '/api/nav'
-      }).then(res => {
-        if (res.data.code === 200) {
+      Api.getNav().then(res => {
+        if (res.code === 200) {
           //提交mutations，更改store里的数据
-          commit({ type: 'setState', key: 'navList',  value: res.data.data })
+          commit({ type: 'setState', key: 'navList',  value: res.data })
         }
       })
     },
     //列表接口
     getList({ state, commit }) {
-      axios({
-        url: `/api/list?id=${state.currentId}`
-      }).then(res => {
-        if (res.data.code === 200) {
+      Api.getList(`?id=${state.currentId}`).then(res => {
+        if (res.code === 200) {
           //提交mutations，更改store里的数据
-          commit({ type: 'setState', key: 'currentList', value: res.data.data })
+          commit({ type: 'setState', key: 'currentList', value: res.data })
         }
       })
     },
     //获取书包
     getMyBook({ commit }) {
-      axios({
-        url: '/api/my_book'
-      }).then(res => {
-        if (res.data.code === 200) {
-          commit({ type: 'setState', key: 'myBook', value: res.data.data })
+      Api.getMyBook().then(res => {
+        if (res.code === 200) {
+          commit({ type: 'setState', key: 'myBook', value: res.data })
         }
       })
     }

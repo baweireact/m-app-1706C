@@ -9,7 +9,8 @@ export default new Vuex.Store({
     navList: [],
     currentList: [],
     currentId: 0,
-    myBook: []
+    myBook: [],
+    listAll: []
   },
   mutations: {
     setState(state, payload) {
@@ -41,6 +42,13 @@ export default new Vuex.Store({
       Api.getMyBook().then(res => {
         if (res.code === 200) {
           commit({ type: 'setState', key: 'myBook', value: res.data })
+        }
+      })
+    },
+    getListAll({ commit }) {
+      Api.getListAll().then(res => {
+        if (res.code === 200) {
+          commit({ type: 'setState', key: 'listAll', value: res.data })
         }
       })
     }

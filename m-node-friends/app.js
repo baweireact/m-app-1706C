@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 //let jsonParser = bodyParser.json()
 
 //处理react前端路由(BrowserRoute)，vue前端路由(mode:history)，注意：开启后无法用postman和浏览器地址栏调试get接口
-//app.use(history())
+app.use(history())
 
 //静态web服务器
 app.use(express.static(__dirname + '/public'))

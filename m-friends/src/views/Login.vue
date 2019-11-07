@@ -46,6 +46,7 @@ export default {
         res => {
           if (res.code === 200) {
             localStorage.setItem("token", res.data.token);
+            localStorage.setItem('username', res.data.username)
             this.$router.push("/index/home");
           }
         }

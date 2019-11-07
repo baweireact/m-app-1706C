@@ -1,10 +1,16 @@
 <template>
   <div>
-    <div v-for="item in currentList" :key="item.id">
-      {{item.title}},
-      <button @click="handleDetail(item.id)">详情</button>
-      <button v-if="item.is_in_my_book">已收藏</button>
-      <button v-else @click="handleAdd(item)">收藏</button>
+    <div v-for="item in currentList" :key="item.id" class="m-list-item">
+      <div class="m-list-img-wrap">
+        <img v-lazy="item.avatar" alt="" class="m-list-img">
+      </div>
+      <div class="m-list-info">
+        {{item.title}},
+        <button @click="handleDetail(item.id)">详情</button>
+        <button v-if="item.is_in_my_book">已收藏</button>
+        <button v-else @click="handleAdd(item)">收藏</button>
+      </div>
+
     </div>
   </div>
 </template>
@@ -15,7 +21,17 @@ import axios from "axios";
 export default {
   computed: {
     currentList() {
-      return this.$store.state.currentList;
+      let myBook = this.$store.state.myBook;
+      let currentList = this.$store.state.currentList
+      currentList.forEach(item => {
+        let currentBook = myBook.find(book => book.id === item.id)
+        if (currentBook) {
+          item.count = currentBook.count
+        } else {
+          item.count = 0
+        }
+      })
+      return currentList;
     }
   },
   methods: {
@@ -25,12 +41,9 @@ export default {
     handleAdd(item) {
       let myBook = this.$store.state.myBook;
       let index = myBook.findIndex(book => book.id === item.id);
-      if (index >= 0) {
-        myBook[index].count++;
-      } else {
-        item.count = 1;
-        myBook.push(item);
-      }
+      item.checked = true  //复选框
+      item.count = 1;
+      myBook.push(item);
       //向store里存
       this.$store.commit({ type: "setState", key: "myBook", value: myBook });
       //向后端存

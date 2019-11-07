@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m-home">
     <Nav></Nav>
     <List></List>
   </div>
@@ -17,6 +17,7 @@ export default {
   mounted() {
     this.$store.dispatch({ type: 'getNav' })
     this.$store.dispatch({ type: 'getList' })
+    this.$store.dispatch({ type: 'getListAll' })
   }
 }
 </script>

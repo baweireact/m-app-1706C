@@ -6,6 +6,7 @@ import Index from '../views/Index'
 import Home from '../views/Home'
 import Me from '../views/Me'
 import ModifyPassword from '../views/ModifyPassword'
+import PostMessage from '../views/PostMessage'
 
 Vue.use(VueRouter)
 
@@ -26,6 +27,9 @@ const routes = [
     children: [{
       path: '/index/home',
       component: Home,
+    }, {
+      path: '/post_message',
+      component: PostMessage
     }, {
       path: '/index/me',
       component: Me,

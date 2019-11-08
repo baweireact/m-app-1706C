@@ -26,6 +26,18 @@ router.post('/add_message', userController.addMessage)
 //更新消息
 router.post('/update_message', userController.updateMessage)
 
+//删除消息
+router.post('/delete_message', userController.deleteMessage)
+
+//点赞
+router.post('/like', userController.like)
+
+//取消点赞
+router.post('/cancel_like', userController.cancelLike)
+
+//评论
+router.post('/comment', userController.comment)
+
 module.exports = router
 
 

@@ -4,6 +4,9 @@
 .m-nav-item.router-link-active{color: red;}
 .m-post-btn-wrap{position: relative;height: 30px;}
 .m-post-btn{position: absolute;top: 0;right: 10px;}
-.m-message-list-item{padding: 0 0 10px 0; border-bottom: 1px solid #dddddd;}
+.m-message-list-item{padding: 10px 0 10px 0; border-bottom: 1px solid #dddddd;}
+.m-message-username{font-weight: bold;color: #0181e9;}
+.m-message-time{font-size: 14px;color: #999999;}
+.m-comment-wrap{background: #dddddd;}
 
 

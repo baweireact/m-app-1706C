@@ -34,7 +34,7 @@ const checkTokenByMiddleware = (req, res, next) => {
   let token = req.headers.token
   client.get(token, (err, response) => {
     if (response) {
-      client.set(token, token, 'EX', 60)
+      client.set(token, token, 'EX', 60 * 10)
       next()
     } else {
       res.send({
@@ -53,7 +53,7 @@ const login = (req, res) => {
   if (user) {
     if (user.password === password) {
       let token = jwt.encode(user.id, secret)
-      client.set(token, token, 'EX', 60)
+      client.set(token, token, 'EX', 60 * 10)
       res.send({
         code: 200,
         data: {

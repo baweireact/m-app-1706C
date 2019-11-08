@@ -1,10 +1,9 @@
 <template>
   <div>
-    <textarea v-model="message" name="" id="" cols="30" rows="10" placeholder="请输入要发布的内容"></textarea>
+    <textarea v-model="message" name="" id="" cols="30" rows="10" placeholder="请输入要发布的内容" ref="comment"></textarea>
     <div>
       <button @click="handlePostMessage">发布</button>
     </div>
-    
   </div>
 </template>
 
@@ -29,6 +28,9 @@ export default {
         }
       })
     }
+  },
+  mounted() {
+    this.$refs.comment.focus()
   }
 }
 </script>

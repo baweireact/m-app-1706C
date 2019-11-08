@@ -6,7 +6,11 @@ const urls = {
   quit: '/api/user/quit',
   getMessageList: '/api/user/get_message_list',
   addMessage: '/api/user/add_message',
-  updateMessage: '/api/user/update_message'
+  updateMessage: '/api/user/update_message',
+  deleteMessage: '/api/user/delete_message',
+  like: '/api/user/like',
+  cancelLike: '/api/user/cancel_like',
+  comment: '/api/user/comment'
 }
 
 export default urls

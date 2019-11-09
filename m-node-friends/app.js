@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const history = require('connect-history-api-fallback')
 const user = require('./router/user')
+const upload = require('./router/upload')
 
 const app = express()
 
@@ -19,6 +20,7 @@ app.use(history())
 
 //静态web服务器
 app.use(express.static(__dirname + '/public'))
+app.use(express.static(__dirname + '/upload'))
 
 //动态路由
 app.get('/api/test/:id', (req, res) => {
@@ -31,6 +33,9 @@ app.get('/api/test/:id', (req, res) => {
 })
 
 app.use('/api/user/', user)
+
+//上传文件
+app.use('/api/', upload)
 
 app.listen(82)
 console.log(82)

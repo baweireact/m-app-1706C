@@ -6,7 +6,17 @@
 .m-post-btn{position: absolute;top: 0;right: 10px;}
 .m-message-list-item{padding: 10px 0 10px 0; border-bottom: 1px solid #dddddd;}
 .m-message-username{font-weight: bold;color: #0181e9;}
-.m-message-time{font-size: 14px;color: #999999;}
 .m-comment-wrap{background: #dddddd;}
+.m-image-list-wrap{display: flex;flex-flow: row wrap;}
+.m-image-item-wrap{flex: 0 0 33%;margin: 1px 0;overflow: hidden;background-size: 99%;background-position: center;background-repeat: no-repeat;}
+.m-info{position: relative;}
+.m-message-time{font-size: 14px;color: #999999;}
+.m-message-delete-btn{margin: 0 10px; font-size:14px;color: #0181e9;cursor: pointer;}
+.m-menu-btn{display: inline-block; position: absolute;top: 2px;right: 10px;width: 30px;height: 20px;line-height: 20px;text-align: center; background: #dddddd;border-radius: 3px;cursor: pointer;}
+.m-menu-wrap{display: none;}
+.m-menu-wrap.active{display: block;}
+.m-menu{display: flex;position: absolute; top:-4px;right: 50px; width: 100px;height: 30px;line-height: 30px; border-radius: 3px; background: #333333;color: #ffffff;}
+.m-menu-item{flex:1;text-align: center;cursor: pointer;}
+
 
 

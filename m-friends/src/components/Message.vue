@@ -4,24 +4,35 @@
       <div v-for="item in messageList" :key="item.id" class="m-message-list-item">
         <div class="m-message-username">{{item.username}}</div>
         <div>{{item.message}}</div>
-        <div class="m-message-time">{{item.createTime}}</div>
-        <div>
-          <button
-            v-if="item.like.find(like => like === username)"
-            @click="handleCancelLike(item.id)"
-          >取消点赞</button>
-          <button v-else @click="handleLike(item.id)">点赞</button>
-          <button @click="handleShow(item.id)">评论</button>
-          <button v-if="item.username === username" @click="handleDelete(item.id)">删除</button>
+        <ImageList :imageList="item.imageList"></ImageList>
+        <div class="m-info">
+          <span class="m-message-time">{{item.createTime}}</span>
+          <span
+            class="m-message-delete-btn"
+            v-if="item.username === username"
+            @click="handleDelete(item.id)"
+          >删除</span>
+          <span class="m-menu-btn" @click="handleShowMenu(item.id)">··</span>
+          <div class="m-menu-wrap" :class="{active: showMenuId === item.id }">
+            <div class="m-menu">
+              <span
+                class="m-menu-item"
+                v-if="item.like.find(like => like === username)"
+                @click="handleCancelLike(item.id)"
+              >取消</span>
+              <span class="m-menu-item" v-else @click="handleLike(item.id)">赞</span>
+              <span class="m-menu-item" @click="handleShow(item.id)">评论</span>
+            </div>
+          </div>
         </div>
-        <div>
+        <div v-if="item.like.length > 0">
           ❤
           <span>{{item.like.join(',')}}</span>
         </div>
         <div class="m-comment-wrap">
           <div v-for="(comment,index) in item.comment" :key="index">
             <span class="m-message-username">{{comment.username}}:</span>
-            {{comment.content}}
+            <span>{{comment.content}}</span>
           </div>
         </div>
       </div>
@@ -37,6 +48,7 @@
 </template>
 
 <script>
+import ImageList from "./ImageList";
 import Api from "../api";
 import moment from "moment";
 moment.locale("zh-cn");
@@ -47,7 +59,8 @@ export default {
       visible: false,
       comment: "",
       currentId: 0,
-      username: localStorage.getItem("username") || 'admin'
+      username: localStorage.getItem("username") || "admin",
+      showMenuId: ''
     };
   },
   computed: {
@@ -65,6 +78,9 @@ export default {
       return messageList;
     }
   },
+  components: {
+    ImageList
+  },
   methods: {
     handleShow(id) {
       this.comment = "";
@@ -74,6 +90,13 @@ export default {
     handleClose() {
       this.visible = false;
     },
+    handleShowMenu(id) {
+      if (this.showMenuId === '') {
+        this.showMenuId = id
+      } else {
+        this.showMenuId = ''
+      }
+    },
     handleLike(id) {
       this.$store.dispatch({ type: "like", id, username: this.username });
     },
@@ -81,6 +104,10 @@ export default {
       this.$store.dispatch({ type: "cancelLike", id, username: this.username });
     },
     handleConfirm() {
+      if (this.comment === '') {
+        alert('评论不能为空哦~')
+        return
+      }
       let comment = {
         username: this.username,
         content: this.comment

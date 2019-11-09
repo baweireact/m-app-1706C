@@ -1,7 +1,5 @@
 .DS_Store
 node_modules
-node_modules1
-upload
 /dist
 
 # local env files

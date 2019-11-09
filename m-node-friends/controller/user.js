@@ -167,11 +167,12 @@ const addMessage = (req, res) => {
   let id = jwt.decode(token, secret)
   console.log(id)
   let user = userList.find(item => item.id === id)
-  let { message } = req.body
+  let { message, imageList } = req.body
   messageList.unshift({
     id: Date.now(),
     message,
     username: user.username,
+    imageList,
     createTime: Date.now(),
     like: [],
     comment: [],

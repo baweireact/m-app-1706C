@@ -1,0 +1,23 @@
+{
+  "id": "1495008",
+  "name": "1706C_NEW",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "731317",
+      "name": "不显示密码",
+      "font_class": "guanbi",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "1273363",
+      "name": "操作-显示密码",
+      "font_class": "caozuo-xianshihaoma",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    }
+  ]
+}

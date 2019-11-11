@@ -21,7 +21,7 @@
                 @click="handleCancelLike(item.id)"
               >取消</span>
               <span class="m-menu-item" v-else @click="handleLike(item.id)">赞</span>
-              <span class="m-menu-item" @click="handleShow(item.id)">评论</span>
+              <span class="m-menu-item" @click="handleShowCommentDialog(item.id)">评论</span>
             </div>
           </div>
         </div>
@@ -30,15 +30,31 @@
           <span>{{item.like.join(',')}}</span>
         </div>
         <div class="m-comment-wrap">
-          <div v-for="(comment,index) in item.comment" :key="index">
-            <span class="m-message-username">{{comment.username}}:</span>
+          <div
+            v-for="(comment,index) in item.comment"
+            :key="index"
+            @click="handleShowReplyDialog(comment.username, item.id)"
+          >
+            <span class="m-message-username">{{comment.username}}</span>
+            <span v-if="comment.replyUsername">
+              <span class="m-reply-text">回复</span>
+              <span class="m-message-username">{{comment.replyUsername}}</span>
+            </span>
+            <span class="m-message-username">:</span>
             <span>{{comment.content}}</span>
           </div>
         </div>
       </div>
     </div>
-    <el-dialog :visible="visible" @close="handleClose" width="240px">
+    <el-dialog :visible="commentVisible" @close="handleClose" width="240px">
       <el-input type="text" autofocus v-model="comment" placeholder="请输入评论内容"></el-input>
+      <div slot="footer">
+        <el-button @click="handleClose">取消</el-button>
+        <el-button @click="handleConfirm">确定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog :visible="replyVisible" @close="handleClose" width="240px">
+      <el-input type="text" autofocus v-model="comment" :placeholder="`请输入回复${replyUsername}的内容`"></el-input>
       <div slot="footer">
         <el-button @click="handleClose">取消</el-button>
         <el-button @click="handleConfirm">确定</el-button>
@@ -56,11 +72,13 @@ moment.locale("zh-cn");
 export default {
   data() {
     return {
-      visible: false,
+      commentVisible: false,
       comment: "",
       currentId: 0,
       username: localStorage.getItem("username") || "admin",
-      showMenuId: ''
+      showMenuId: "",
+      replyUsername: "",
+      replyVisible: false
     };
   },
   computed: {
@@ -82,45 +100,59 @@ export default {
     ImageList
   },
   methods: {
-    handleShow(id) {
+    //显示评论对话框
+    handleShowCommentDialog(id) {
       this.comment = "";
       this.currentId = id;
-      this.visible = true;
+      this.commentVisible = true;
     },
-    handleClose() {
-      this.visible = false;
-    },
-    handleShowMenu(id) {
-      if (this.showMenuId === '') {
-        this.showMenuId = id
-      } else {
-        this.showMenuId = ''
+    //显示回复对话框
+    handleShowReplyDialog(username, id) {
+      if (username !== this.username) {
+        this.replyUsername = username;
+        this.replyVisible = true;
+        this.comment = "";
+        this.currentId = id;
       }
     },
-    handleLike(id) {
-      this.$store.dispatch({ type: "like", id, username: this.username });
-    },
-    handleCancelLike(id) {
-      this.$store.dispatch({ type: "cancelLike", id, username: this.username });
-    },
+    //评论和回复对话框点击确定时都走这
     handleConfirm() {
-      if (this.comment === '') {
-        alert('评论不能为空哦~')
-        return
+      if (this.comment === "") {
+        alert("内容不能为空哦~");
+        return;
       }
       let comment = {
         username: this.username,
+        replyUsername: this.replyUsername,
         content: this.comment
       };
       this.$store.dispatch({ type: "comment", id: this.currentId, comment });
-      this.visible = false;
+      this.handleClose();
     },
+    //关闭所有对话框
+    handleClose() {
+      this.commentVisible = false;
+      this.replyVisible = false;
+    },
+    //显示点赞和评论菜单
+    handleShowMenu(id) {
+      if (this.showMenuId === "") {
+        this.showMenuId = id;
+      } else {
+        this.showMenuId = "";
+      }
+    },
+    //点赞
+    handleLike(id) {
+      this.$store.dispatch({ type: "like", id, username: this.username });
+    },
+    //取消点赞
+    handleCancelLike(id) {
+      this.$store.dispatch({ type: "cancelLike", id, username: this.username });
+    },
+    //删除朋友圈
     handleDelete(id) {
       this.$store.dispatch({ type: "deleteMessage", id });
-    },
-    updateMessageList() {
-      let messageList = this.$store.state.messageList;
-      Api.updateMessage({ newMessageList: messageList }).then(res => {});
     }
   },
   mounted() {

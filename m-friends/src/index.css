@@ -17,6 +17,7 @@
 .m-menu-wrap.active{display: block;}
 .m-menu{display: flex;position: absolute; top:-4px;right: 50px; width: 100px;height: 30px;line-height: 30px; border-radius: 3px; background: #333333;color: #ffffff;}
 .m-menu-item{flex:1;text-align: center;cursor: pointer;}
-
-
-
+.m-reply-text{display: inline-block; margin: 0 5px;color: #333333; font-size: 14px;}
+.m-big-image-wrap{display: none;position: fixed;top: 0;left: 0;right: 0;bottom: 0;background-color: rgba(0,0,0,0.5);}
+.m-big-image-wrap.active{display: flex;}
+.m-big-image{margin: auto;max-width: 100%;}

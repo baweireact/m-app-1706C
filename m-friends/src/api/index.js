@@ -35,7 +35,6 @@ export default {
   quit: () => common({ url: urls.quit }),
   getMessageList: () => common({ url: urls.getMessageList }),
   addMessage: (data) => common({ url: urls.addMessage, data, method: 'post' }),
-  updateMessage: (data) => common({ url: urls.updateMessage, data, method: 'post' }),
   deleteMessage: (data) => common({ url: urls.deleteMessage, data, method: 'post' }),
   like: (data) => common({ url: urls.like, data, method: 'post' }),
   cancelLike: (data) => common({ url: urls.cancelLike, data, method: 'post'}),

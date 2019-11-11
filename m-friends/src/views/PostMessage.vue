@@ -70,6 +70,10 @@ export default {
     handleUpload(e) {
       const data = new FormData();
       let files = e.target.files;
+      if (files.length > 9) {
+        alert('最多只能上传9张哦~')
+        return
+      }
       files.forEach(item => {
         data.append("img", item);
       });

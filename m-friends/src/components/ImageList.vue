@@ -5,16 +5,34 @@
       :key="index"
       class="m-image-item-wrap"
       :style="{backgroundImage:`url(${image.imgUrl})`, height: imageHeight }"
+      @click="handleShowBigImage(image.imgUrl)"
     ></div>
+    <BigImage :bigImagUrl="bigImagUrl" :visible="bigImageVisible" :onHideBigImage="handleHideBigImage"></BigImage>
   </div>
 </template>
 
 <script>
+import BigImage from "./BigImage";
+
 export default {
-  props: ['imageList'],
+  props: ["imageList"],
   data() {
     return {
-      imageHeight: 'auto'
+      imageHeight: "auto",
+      bigImagUrl: "",
+      bigImageVisible: false
+    };
+  },
+  components: {
+    BigImage
+  },
+  methods: {
+    handleShowBigImage(imgUrl) {
+      this.bigImagUrl = imgUrl
+      this.bigImageVisible = true
+    },
+    handleHideBigImage() {
+      this.bigImageVisible = false
     }
   },
   mounted() {

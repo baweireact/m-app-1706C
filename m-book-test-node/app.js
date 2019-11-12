@@ -2,7 +2,7 @@ const expess = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const uuidv1 = require('uuid/v1')
-const { bookMallData, bookMallDetailData } = require('./data')
+const { bookNavData, bookMallData, bookMallDetailData } = require('./data')
 
 const app = expess()
 
@@ -76,10 +76,33 @@ app.post('/api/register', (req, res) => {
 })
 
 //全部数据
-app.get('/api/list', (req, res) => {
+app.get('/api/list_all', (req, res) => {
   res.send({
     code: 200,
     data: bookMallData,
+    message: '列表'
+  })
+})
+
+//导航
+app.get('/api/nav', (req, res) => {
+  res.send({
+    code: 200,
+    data: bookNavData,
+    message: '导航'
+  })
+})
+
+//列表
+app.get('/api/list', (req, res) => {
+  let { id } = req.query
+  let list = bookMallData.find(item => item.id == id).list
+  list.forEach(item => {
+    item.is_in_my_book = myBook.findIndex(book => book.id === item.id) >= 0
+  })
+  res.send({
+    code: 200,
+    data: list,
     message: '列表'
   })
 })

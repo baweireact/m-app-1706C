@@ -1,22 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Api from '../api'
+import actionCreator from '../store/actionCreator'
 
 class Nav extends Component {
   handleNav(id) {
     this.props.setState('currentId', id)
-    Api.getList(`?id=${id}`).then(res => {
-      this.props.setState('currentList', res.data)
-    })
+    this.props.onDispacth(actionCreator.getList(id))
   }
   componentDidMount() {
     let { currentId } = this.props
-    Api.getNav().then(res => {
-      this.props.setState('navList', res.data)
-    })
-    Api.getList(`?id=${currentId}`).then(res => {
-      this.props.setState('currentList', res.data)
-    })
+    this.props.onDispacth(actionCreator.getNav())
+    this.props.onDispacth(actionCreator.getList(currentId))
   }
   render() {
     let { navList, currentId } = this.props
@@ -45,6 +40,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setState(key, value) {
       dispatch({ type: 'SET_STATE', key, value })
+    },
+    onDispacth(action) {
+      dispatch(action)
     }
   }
 }

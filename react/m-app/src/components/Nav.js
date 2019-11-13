@@ -4,13 +4,13 @@ import actionCreator from '../store/actionCreator'
 
 class Nav extends Component {
   handleNav(id) {
-    this.props.setState('currentId', id)
-    //this.props.dispatch(actionCreator.getList(id))
+    this.props.setState(['currentId'], id)
+    this.props.onDispatch(actionCreator.getList(id))
   }
   componentDidMount() {
     let { currentId } = this.props
-    actionCreator.getList(currentId)
-    //this.props.dispatch(actionCreator.getList(currentId))
+    this.props.onDispatch(actionCreator.getNav())
+    this.props.onDispatch(actionCreator.getList(currentId))
   }
   render() {
     let { navList, currentId } = this.props
@@ -30,8 +30,8 @@ class Nav extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    navList: state.navList,
-    currentId: state.currentId
+    navList: state.toJS().navList,
+    currentId: state.toJS().currentId
   }
 }
 

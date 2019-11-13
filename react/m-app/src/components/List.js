@@ -18,6 +18,7 @@ class List extends Component {
 }
 
 const mapStateToProps = (state) => {
+  state = state.toJS()
   return {
     navList: state.navList,
     currentId: state.currentId,

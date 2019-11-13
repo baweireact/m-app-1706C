@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { NavLink, Switch, Route } from 'react-router-dom'
 import Home from './Home'
 import MyBook from './MyBook'
+import Detail from './Detail'
 
 export default class Index extends Component {
   render() {
@@ -14,6 +15,7 @@ export default class Index extends Component {
         <Switch>
           <Route path="/index/home" component={Home}></Route>
           <Route path="/index/my_book" component={MyBook}></Route>
+          <Route path="/index/detail/:id" component={Detail}></Route>
         </Switch>
       </div>
     )

@@ -1,9 +1,11 @@
-import { createStore }  from 'redux'
+import { createStore, applyMiddleware }  from 'redux'
+import thunk from 'redux-thunk'
 
 const defaultState = {
   navList: [],
   currentId: 0,
-  currentList: []
+  currentList: [],
+  myBook: []
 }
 
 //纯函数
@@ -18,6 +20,6 @@ const reducer = (state = defaultState, action) => {
   }
 }
 
-const store = createStore(reducer)
+const store = createStore(reducer, applyMiddleware(thunk))
 
 export default store

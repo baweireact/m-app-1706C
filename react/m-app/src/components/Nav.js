@@ -29,9 +29,10 @@ class Nav extends Component {
 }
 
 const mapStateToProps = (state) => {
+  state = state.toJS()
   return {
-    navList: state.toJS().navList,
-    currentId: state.toJS().currentId
+    navList: state.navList,
+    currentId: state.currentId
   }
 }
 

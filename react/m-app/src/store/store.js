@@ -5,7 +5,8 @@ import thunk from 'redux-thunk'
 const defaultState = fromJS({
   navList: [],
   currentId: 0,
-  currentList: []
+  currentList: [],
+  loading: false
 })
 
 const reducer = (state = defaultState, action) => {

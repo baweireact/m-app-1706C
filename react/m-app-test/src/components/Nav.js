@@ -5,12 +5,16 @@ import actionCreator from '../store/actionCreator'
 
 class Nav extends Component {
   handleNav(id) {
+    //点击导航时更新高亮
     this.props.setState('currentId', id)
+    //点击导航时更新列表
     this.props.onDispacth(actionCreator.getList(id))
   }
   componentDidMount() {
     let { currentId } = this.props
+    //挂载时获取导航数据
     this.props.onDispacth(actionCreator.getNav())
+    //挂载时获取列表数据
     this.props.onDispacth(actionCreator.getList(currentId))
   }
   render() {

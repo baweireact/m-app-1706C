@@ -704,7 +704,7 @@ const mockDataList = Mock.mock({
 	'list|1000': [{
 		'id|+1': 1,
 		'name': '@cname',
-		'image': '@image(122x150)',
+		'image': '@image(300x300)',
 		'title': '@ctitle',
 		'paragraph': '@cparagraph',
 		'datetime': '@datetime'

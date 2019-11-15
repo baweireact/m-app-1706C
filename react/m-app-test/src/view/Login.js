@@ -28,6 +28,7 @@ class Login extends Component {
     }
     Api.login({ username, password }).then(res => {
       if (res.code === 200) {
+        localStorage.setItem('username', res.data.username)
         this.props.history.push('/index/home')
       }
     })

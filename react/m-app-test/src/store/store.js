@@ -1,11 +1,12 @@
 import { createStore, applyMiddleware }  from 'redux'
-import thunk from 'redux-thunk'
+//import thunk from 'redux-thunk'
 
 const defaultState = {
   navList: [],
   currentId: 0,
   currentList: [],
-  myBook: []
+  myBook: [],
+  loading: false
 }
 
 //纯函数
@@ -20,6 +21,20 @@ const reducer = (state = defaultState, action) => {
   }
 }
 
-const store = createStore(reducer, applyMiddleware(thunk))
+//自编写thunk中间件
+const myThunk = store => next => action => {
+  if (typeof action === 'function') {
+    return action(store.dispatch)
+  }
+  return next(action)
+}
+
+//自己编写日志中间件
+const log = store => next => action => {
+  console.log('日志:' + action.type)
+  next(action)
+}
+
+const store = createStore(reducer, applyMiddleware(myThunk, log))
 
 export default store

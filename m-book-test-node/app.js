@@ -1,10 +1,11 @@
-const expess = require('express')
+const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const uuidv1 = require('uuid/v1')
+var history = require('connect-history-api-fallback');
 const { bookNavData, bookMallData, bookMallDetailData, mockDataList } = require('./data')
 
-const app = expess()
+const app = express()
 
 //用户列表
 let userList = [{
@@ -25,12 +26,20 @@ app.use(cors())
 //解析post
 app.use(bodyParser.json())
 
+//处理react前端路由(BrowserRoute)，vue前端路由(mode:history)，注意：开启后无法用postman和浏览器地址栏调试get接口
+// app.use(history())
+
 //让所有接口延时返回
 app.use((req, res, next) => {
   setTimeout(() => {
     next()
   }, 200)
 })
+
+//利用 Express 托管静态文件
+//http://www.expressjs.com.cn/starter/static-files.html
+app.use(express.static('public'))
+
 
 //登录，可以区分用户名错误和密码错误，多用户
 app.post('/api/login', (req, res) => {

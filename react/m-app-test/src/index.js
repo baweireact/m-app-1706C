@@ -5,6 +5,7 @@ import { BrowserRouter, HashRouter } from 'react-router-dom'
 import store from './store/store'
 import Router from './router/Router';
 import * as serviceWorker from './serviceWorker';
+import 'antd/dist/antd.css';
 import './index.css';
 
 ReactDOM.render(

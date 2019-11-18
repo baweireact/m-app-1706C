@@ -2,7 +2,9 @@ import axios from 'axios'
 import urls from './urls'
 
 //配置访问83端口的服务器
-axios.defaults.baseURL = 'http://localhost:83/'
+if (process.env.NODE_ENV === 'development') {
+  axios.defaults.baseURL = 'http://localhost:83/'
+}
 
 //请求前的拦截
 axios.interceptors.request.use((config) => {

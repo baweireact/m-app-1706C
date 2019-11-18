@@ -3,6 +3,8 @@ import { NavLink, Switch, Route } from 'react-router-dom'
 import Home from './Home'
 //import MyBook from './MyBook'
 import Loading from '../components/Loading'
+import News from '../view/News'
+
 const MyBook = lazy(async () => { 
   return await new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -18,11 +20,13 @@ export default class Index extends Component {
         <div>
           <NavLink to="/index/home" className="m-nav-item">首页</NavLink>
           <NavLink to="/index/my_book" className="m-nav-item">书包</NavLink>
+          <NavLink to="/index/news" className="m-nav-item">新闻</NavLink>
         </div>
         <Suspense fallback={<Loading lazyLoading={true}></Loading>}>
           <Switch>
             <Route path="/index/home" component={Home}></Route>
             <Route path="/index/my_book" component={MyBook}></Route>
+            <Route path="/index/news" component={News}></Route>
           </Switch>
         </Suspense>
       </div>

@@ -1,0 +1,4 @@
+/* pages/home/home.wxss */
+.m-count{font-size: 50rpx;}
+.m-btn{margin: 5rpx;}
+.m-img{width: 100%}

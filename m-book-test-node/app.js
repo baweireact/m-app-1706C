@@ -33,7 +33,7 @@ app.use(bodyParser.json())
 app.use((req, res, next) => {
   setTimeout(() => {
     next()
-  }, 200)
+  }, 600)
 })
 
 //利用 Express 托管静态文件
@@ -102,6 +102,7 @@ app.get('/api/list_all', (req, res) => {
 
 //导航
 app.get('/api/nav', (req, res) => {
+  console.log(1)
   res.send({
     code: 200,
     data: bookNavData,

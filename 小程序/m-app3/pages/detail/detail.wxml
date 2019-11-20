@@ -1,0 +1,8 @@
+<!--pages/detail/detail.wxml-->
+<view>
+  <image src="{{detail.avatar}}" class="m-detail-img" mode="widthFix"></image>
+  <view>
+    <button wx:if="{{detail.is_in_my_book}}" size="mini" class="m-btn-disabled">已收藏</button>
+    <button wx:else size="mini" class="m-btn" bind:tap="handleAdd" mark:item="{{detail}}">收藏</button>
+  </view>
+</view>

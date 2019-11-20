@@ -1,0 +1,9 @@
+<!--pages/detail/detail.wxml-->
+<view>
+  <image src="{{detail.avatar}}" mode="widthFix" class="m-img"></image>
+  <view>
+    <button wx:if="{{detail.is_in_my_book}}" size="mini" class="m-btn-disabled">已收藏</button>
+    <button wx:else size="mini" class="m-btn" bind:tap="handleAdd" mark:item="{{detail}}">收藏</button>
+  </view>
+  <map id="map" longitude="116.46" latitude="39.92" scale="10" controls="{{controls}}" bindcontroltap="controltap" markers="{{markers}}" bindmarkertap="markertap" polyline="{{polyline}}" bindregionchange="regionchange" show-location style="width: 100%; height: 300px;"></map>
+</view>

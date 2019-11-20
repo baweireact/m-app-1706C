@@ -1,0 +1,5 @@
+/* pages/my-book/my-book.wxss */
+.m-btn{display: inline-block; margin: 0 10rpx;background: red;color: #ffffff; width: 40rpx;height: 40rpx;border-radius: 20rpx; line-height: 40rpx; text-align: center;}
+.m-text{color: red;font-weight: bold;}
+.m-book-item{position: relative;}
+.m-control{position: absolute;top: 0;right: 5rpx;}

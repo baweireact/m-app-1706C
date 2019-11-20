@@ -1,0 +1,9 @@
+/* components/book-list/book-list.wxss */
+.m-list-item{display: flex;margin: 5rpx;}
+.m-list-img{width: 225rpx;}
+.m-info{position: relative; flex:1;margin: 0 0 0 10rpx;border-bottom: 1px solid #dddddd;}
+.m-btn-wrap{position: absolute;bottom: 10rpx;right: 10rpx;}
+.m-btn{margin: 5rpx; background: red;color: #ffffff;}
+.m-btn-disabled{margin: 5rpx; background: #dddddd;}
+
+

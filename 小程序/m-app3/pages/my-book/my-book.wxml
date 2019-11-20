@@ -1,0 +1,30 @@
+<!--pages/my-book/my-book.wxml-->
+<view>
+  <checkbox-group bind:change="handleChange">
+    <view wx:for="{{myBook}}" wx:key="{{item.id}}" class="m-book-item">
+      <checkbox value="{{item.id}}" checked="{{item.checked}}">{{item.title}}</checkbox>
+      <text class="m-text">￥{{item.price}}</text>
+      <view class="m-control">
+        <text size="mini" class="m-btn" bind:tap="handleSub" mark:index="{{index}}">-</text>
+        <text>{{item.count}}</text>
+        <text size="mini" class="m-btn" bind:tap="handleAdd" mark:index="{{index}}">+</text>
+        <text size="mini" bind:tap="handleDelete" mark:index="{{index}}">删除</text>
+      </view>
+    </view>
+  </checkbox-group>
+  <view>
+    <checkbox-group bind:change="handleSelectAll">
+      <checkbox value="all" checked="{{total.selectedAll}}">全选</checkbox>
+    </checkbox-group>
+    <button size="mini" type="warn" bind:tap="handleDeleteSelected">删除</button>
+  </view>
+  <view>
+    <text>总价:</text>
+    <text class="m-text">￥{{total.totalPrice}}</text>
+    <text>,总数：</text>
+    <text class="m-text">{{total.totalCount}}</text>
+  </view>
+  <view>
+    {{name}}
+  </view>
+</view>

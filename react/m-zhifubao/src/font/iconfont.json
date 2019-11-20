@@ -1,0 +1,58 @@
+{
+  "id": "1495008",
+  "name": "1706C_NEW",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "100498",
+      "name": "转账",
+      "font_class": "zhuanzhang",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "731317",
+      "name": "不显示密码",
+      "font_class": "guanbi",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "1119593",
+      "name": "swt-icon-滴滴出行",
+      "font_class": "swticondidichuxing",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "1214984",
+      "name": "余额宝",
+      "font_class": "yuebao",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "1273363",
+      "name": "操作-显示密码",
+      "font_class": "caozuo-xianshihaoma",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "2076351",
+      "name": "花呗账单",
+      "font_class": "huabeizhangdan",
+      "unicode": "e8af",
+      "unicode_decimal": 59567
+    },
+    {
+      "icon_id": "8402945",
+      "name": "更多",
+      "font_class": "gengduo",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}

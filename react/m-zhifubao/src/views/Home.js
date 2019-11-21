@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import Item from '../components/Item'
 
 class Home extends Component {
-
   handleMore() {
     this.props.history.push('/more')
   }
@@ -19,16 +19,13 @@ class Home extends Component {
   render() {
     let { list } = this.props
     let listDom = list.filter(item => item.selected).slice(0, 11).map(item => (
-      <div className="m-list-item">
-        <div className={"icon iconfont icon-" + item.icon}></div>
-        <div>{item.name}</div>
-      </div>
+      <Item item={item}></Item>
     ))
     return (
       <div className="m-main">
         {listDom}
         <div className="m-list-item" onClick={this.handleMore.bind(this)}>
-          <div className="icon iconfont icon-gengduo"></div>
+          <div className="icon iconfont m-icon icon-gengduo"></div>
           <div>更多</div>
         </div>
       </div>

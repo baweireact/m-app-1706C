@@ -1,0 +1,3 @@
+/* pages/my-book/my-book.wxss */
+.m-book-item{position: relative}
+.m-control{position: absolute;top: 0;right: 10rpx;}

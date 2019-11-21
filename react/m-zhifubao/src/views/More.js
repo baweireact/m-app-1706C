@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import Item from '../components/Item'
 
 class More extends Component {
   handleAdd() {
@@ -19,17 +20,12 @@ class More extends Component {
   render() {
     let { list } = this.props
     let listDom = list.map(item => (
-      <div className="m-list-item">
-        <div className={"icon iconfont icon-" + item.icon}></div>
-        <div>{item.name}</div>
-      </div>
+      <Item item={item}></Item>
     ))
     return (
-      <div className="m-main">
-        <div>
-          <Link to="/index/home">首页</Link>
-          <button onClick={this.handleAdd.bind(this)}>+</button>
-        </div>
+      <div className="m-wrap">
+        <div><Link to="/index/home">{'< 首页'}</Link></div>
+        <div className="m-more-box" onClick={this.handleAdd.bind(this)}>+</div>
         {listDom}
       </div>
     )

@@ -1,4 +1,4 @@
 /* pages/home/home.wxss */
-
+.m-home{position: relative;}
 .m-btn{margin: 5rpx;}
 .m-img{width: 100%}

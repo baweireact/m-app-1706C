@@ -1,5 +1,5 @@
 // components/book-list/book-list.js
-const { host } = getApp().globalData
+const { host, handleSetTabBarBadge } = getApp().globalData
 
 Component({
   /**
@@ -31,6 +31,8 @@ Component({
       wx.showLoading({
         title: '加载中',
       })
+      item.count = 1
+      item.checked = true
       wx.request({
         url: `${host}/api/add`,
         data: {
@@ -40,6 +42,7 @@ Component({
         success: (res) => {
           if (res.data.code === 200) {
             this.triggerEvent('onUpdate')
+            handleSetTabBarBadge(res.data.data.length + '')
           }
         }
       })

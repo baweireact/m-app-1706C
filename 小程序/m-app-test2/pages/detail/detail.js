@@ -13,6 +13,8 @@ Page({
   handleAdd(e) {
     let { detail } = this.data
     let { item } = e.mark
+    item.count = 1
+    item.checked = true
     wx.showLoading({
       title: '加载中',
     })

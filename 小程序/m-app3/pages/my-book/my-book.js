@@ -46,6 +46,7 @@ Component({
         myBook
       })
       this.fun()
+      this.update(myBook)
     },
     handleSub(e) {
       let { myBook } = this.data
@@ -55,6 +56,7 @@ Component({
         this.setData({
           myBook
         })
+        this.update(myBook)
       }
     },
     handleDelete(e) {

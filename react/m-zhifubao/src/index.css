@@ -16,9 +16,14 @@ code {
 .m-footer{display: flex; line-height: 50px;border-top: 1px solid #dddddd;}
 .m-nav-item{flex: 1; text-align: center;}
 .m-nav-item.active{color: red;}
-.m-main{flex: 1;}
-.m-list-item{display: inline-block;width: 25%;text-align: center;cursor: pointer;}
-.m-selected-wrap{padding: 0 0 20px 0;border-bottom: 1px solid #dddddd;}
-
-
+.m-main{flex: 1;padding: 5px;}
+.m-wrap{padding: 5px;}
+.m-list-item{display: inline-block;position: relative; width: 25%;height: 150px; border: 1px solid #dddddd;box-sizing: border-box; text-align: center;cursor: pointer;}
+.m-icon{font-size: 36px;line-height: 100px;}
+.m-item-delete-btn{position: absolute;display: inline-block; top: 5px;right: 5px;font-size: 24px;font-weight: bold;width: 30px;height: 30px;border-radius: 15px;cursor: pointer; line-height: 30px;text-align: center;background: #dddddd;color: #ffffff;}
+.m-item-add-btn{position: absolute;display: inline-block; top: 5px;right: 5px;font-size: 24px;font-weight: bold;width: 30px;height: 30px;border-radius: 15px;cursor: pointer; line-height: 30px;text-align: center;background: #0678e2;color: #ffffff;}
+.m-more-text{text-align: center;font-size: 36px;line-height: 100px;}
+.m-more-box{margin: 10px; line-height: 100px;text-align: center;font-size: 36px;border: 1px dashed #999999;}
+.m-save-wrap{position: relative;margin: 10px;}
+.m-save-btn{position: absolute;top: 0;right: 0;}
 

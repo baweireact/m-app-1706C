@@ -1,5 +1,5 @@
 // pages/home/home.js
-const { host } = getApp().globalData
+const { host, handleSetTabBarBadge } = getApp().globalData
 
 Page({
 
@@ -127,6 +127,15 @@ Page({
           this.setData({
             currentList: res.data.data
           })
+        }
+      }
+    })
+
+    wx.request({
+      url: `${host}/api/my_book`,
+      success: (res) => {
+        if (res.data.code === 200) {
+          handleSetTabBarBadge(res.data.data.length + '')
         }
       }
     })

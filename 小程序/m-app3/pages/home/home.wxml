@@ -1,4 +1,4 @@
-<view>
+<view class="m-home">
   <swiper
     indicator-dots="{{true}}"
     autoplay="{{true}}"

@@ -1,0 +1,21 @@
+<view class="m-home">
+  <swiper
+    indicator-dots="{{true}}"
+    autoplay="{{true}}"
+    duration="{{1000}}"
+    interval="{{1000}}"
+    circular="{{true}}"
+    style="height:{{height}}px"
+    >
+    <swiper-item wx:for="{{banner}}" wx:key="{{index}}">
+      <image src="{{item.image}}" mode="widthFix" class="m-img" bindload="handleImageLoad"></image>
+    </swiper-item>
+  </swiper>
+  <text>{{count}}</text>
+  <view>
+    <button size="mini" type="primary" bind:tap="handleSub" class="m-btn">减</button>
+    <button size="mini" type="primary" bind:tap="handleAdd" class="m-btn">加</button>
+  </view>
+  <book-nav navList="{{navList}}" currentId="{{currentId}}" bind:onNav="handleNav"></book-nav>
+  <book-list currentList="{{currentList}}" bind:onUpdate="handleUpdate"></book-list>
+</view>

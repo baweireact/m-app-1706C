@@ -1,11 +1,13 @@
 {
   "pages": [
+    "pages/news/news",
     "pages/my-book/my-book",
     "pages/home/home",
     "pages/index/index",
     "pages/logs/logs",
+    "pages/detail/detail",
+    "pages/details/details"
     
-    "pages/detail/detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -30,6 +32,12 @@
         "text": "书包",
         "iconPath": "/static/images/cart.png",
         "selectedIconPath": "/static/images/cart-active.png"
+      },
+      {
+        "pagePath": "pages/news/news",
+        "text": "新闻",
+        "iconPath": "/static/images/find.png",
+        "selectedIconPath": "/static/images/find-active.png"
       },
       {
         "pagePath": "pages/index/index",

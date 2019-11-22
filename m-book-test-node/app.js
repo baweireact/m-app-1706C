@@ -190,18 +190,31 @@ app.get('/api/mock_data', (req, res) => {
   })
 })
 
+//新闻
 app.get('/api/news', (req, res) => {
-  let { page, size } = req.query
+  let { page, size, searchValue } = req.query
 
   let start, end
   start = (page - 1) * size
   end = start + size * 1
-  let data = mockDataList.slice(start, end)
-  res.send({
-    code: 200,
-    data,
-    message: 'mock生成的数据'
-  })
+  if (searchValue) {
+    console.log(searchValue)
+    //模糊搜索
+    let searchResult = mockDataList.filter(item => item.name.includes(searchValue))
+    let data = searchResult.slice(start, end)
+    res.send({
+      code: 200,
+      data,
+      message: '搜索的结果'
+    })
+  } else {
+    let data = mockDataList.slice(start, end)
+    res.send({
+      code: 200,
+      data,
+      message: 'mock生成的数据'
+    })
+  }
 })
 
 app.listen(83)

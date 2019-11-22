@@ -35,7 +35,7 @@ App({
   },
   globalData: {
     userInfo: null,
-    host: 'http://10.1.4.47:83',
+    host: 'http://10.1.2.1:83',
     handleSetTabBarBadge(text) {
       if (text === '0') {
         wx.removeTabBarBadge({

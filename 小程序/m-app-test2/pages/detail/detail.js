@@ -51,6 +51,9 @@ Page({
         }
       }
     })
+
+    let detail = wx.getStorageSync('book')
+    console.log(detail)
   },
 
   /**

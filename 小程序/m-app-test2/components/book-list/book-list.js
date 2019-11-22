@@ -46,6 +46,11 @@ Component({
           }
         }
       })
+
+      wx.setStorage({
+        key: "book",
+        data: item
+      })
     }
   }
 })

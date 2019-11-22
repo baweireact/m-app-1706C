@@ -22,9 +22,14 @@ Component({
   methods: {
     handleDetail(e) {
       let { id } = e.mark
+      //details是使用组件做的的详情页
       wx.navigateTo({
-        url: `/pages/detail/detail?id=${id}`,
+        url: `/pages/details/details?id=${id}`,
       })
+      //detail是使用page做的详情页
+      // wx.navigateTo({
+      //   url: `/pages/detail/detail?id=${id}`,
+      // })
     },
     handleAdd(e) {
       let { item } = e.mark

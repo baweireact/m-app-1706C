@@ -1,0 +1,4 @@
+/* pages/details/details.wxss */
+.m-detail-img{width: 100%;}
+.m-btn{margin: 5rpx; background: red;color: #ffffff;}
+.m-btn-disabled{margin: 5rpx; background: #dddddd;}

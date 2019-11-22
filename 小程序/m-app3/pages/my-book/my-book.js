@@ -1,6 +1,6 @@
 // pages/my-book/my-book.js
 const computedBehavior = require('miniprogram-computed')
-const myBehavior = require('./my-behavior.js')
+const myBehavior = require('../../utils/my-behavior.js')
 const { host, handleSetTabBarBadge } = getApp().globalData
 
 Component({
@@ -188,11 +188,8 @@ Component({
       this.setData({
         markers
       })
-    }
-  },
-
-  pageLifetimes: {
-    show() {
+    },
+    onShow() {
       wx.request({
         url: `${host}/api/my_book`,
         success: (res) => {

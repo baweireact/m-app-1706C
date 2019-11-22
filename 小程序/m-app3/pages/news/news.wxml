@@ -1,0 +1,21 @@
+<!--pages/news/news.wxml-->
+<view class="m-wrap">
+  <view class="m-search-wrap">
+    <input value="{{searchValue}}" class="m-input" value="{{searchValue}}" data-field="searchValue" bind:input="handleInput" focus="{{true}}" placeholder="请输入关键词"/>
+    <button size="mini" class="m-serach-btn" bind:tap="handleSearch">搜索</button>
+  </view>
+  <view class="m-main">
+    <scroll-view scroll-y="true" class="m-scroll-view" bind:scrolltolower="handleMore" enable-back-to-top="{{true}}" scroll-into-view="{{toTop}}">
+      <view id="top"></view>
+      <view wx:for="{{newsList}}" wx:key="id" class="m-news-item">
+        <image src="{{item.image}}" mode="widthFix" class="m-img"></image>
+        <view class="m-info">
+          <view class="m-title">{{item.name}}</view>
+        </view>
+      </view>
+      <view class="m-end">{{end}}</view>
+      <button size="mini" class="m-to-top-btn" bind:tap="handleToTop">↑</button>
+    </scroll-view>
+  </view>
+
+</view>

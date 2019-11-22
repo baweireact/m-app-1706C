@@ -59,21 +59,45 @@ Component({
       }],
       width: 2,
       color: '#ff0000'
-    }]
+    }],
+    total: {}
   },
 
+  //计算属性
   computed: {
-    total(data) {
+    // total(data) {
+    //   let totalPrice = 0, totalCount = 0
+    //   data.myBook.filter(item => item.checked).forEach(item => {
+    //     totalCount += item.count
+    //     totalPrice += item.count * item.price
+    //   })
+    //   return {
+    //     totalCount,
+    //     totalPrice,
+    //     selectedAll: data.myBook.length === data.myBook.filter(item => item.checked).length && data.myBook.length > 0
+    //   }
+    // }
+  },
+
+  //数据监听
+  observers: {
+    'myBook': function (myBook) {
+      
       let totalPrice = 0, totalCount = 0
-      data.myBook.filter(item => item.checked).forEach(item => {
+      myBook.filter(item => item.checked).forEach(item => {
         totalCount += item.count
         totalPrice += item.count * item.price
       })
-      return {
+      let total = {
         totalCount,
         totalPrice,
-        selectedAll: data.myBook.length === data.myBook.filter(item => item.checked).length && data.myBook.length > 0
+        selectedAll: myBook.length === myBook.filter(item => item.checked).length && myBook.length > 0
       }
+      this.setData({
+        total
+      })
+      //保存到后端
+      this.update(myBook)
     }
   },
 
@@ -89,7 +113,6 @@ Component({
         myBook
       })
       this.fun()
-      this.update(myBook)
     },
     handleSub(e) {
       let { myBook } = this.data
@@ -99,7 +122,6 @@ Component({
         this.setData({
           myBook
         })
-        this.update(myBook)
       }
     },
     handleDelete(e) {
@@ -109,7 +131,6 @@ Component({
       this.setData({
         myBook
       })
-      this.update(myBook)
     },
     handleChange(e) {
       let { value } = e.detail
@@ -120,7 +141,6 @@ Component({
       this.setData({
         myBook
       })
-      this.update(myBook)
     },
     handleSelectAll(e) {
       let { value } = e.detail
@@ -131,7 +151,6 @@ Component({
       this.setData({
         myBook
       })
-      this.update(myBook)
     },
     update(myBook) {
       wx.request({
@@ -167,7 +186,6 @@ Component({
             this.setData({
               myBook
             })
-            this.update(myBook)
           }
         }
       })

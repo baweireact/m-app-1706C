@@ -28,5 +28,5 @@
     {{name}}
   </view>
   <view>物流信息：</view>
-  <map id="map" longitude="{{116.30006790161133}}" latitude="{{40.04096650866428}}" scale="{{14}}" class="m-map" markers="{{markers}}" polyline="{{polyline}}" bind:tap="handleMapTap"></map>
+  <map id="map" longitude="{{116.30006790161133}}" latitude="{{40.04096650866428}}" scale="{{14}}" class="m-map" markers="{{markers}}" polyline="{{polyline}}" bind:tap="handleMapTap" setting="{{setting}}"></map>
 </view>

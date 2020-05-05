@@ -1,11 +1,31 @@
-console.log(data)
+// let strArr = []
+// console.log = (function(oriLogFunc){
+//   return function(str)
+//   {
+//     //strArr.push(str)
+//     oriLogFunc.call(console, str);
+//   }
+// })(console.log);
+
+//console.log(data)
+
+//利润亏损多少清仓
+let clearSwitch = -0.2
+
+//清仓后，如果价格回升，超过清仓时的价格n%，则再次买进
+let addSwitch = 0.02
+
+let total = []
 
 //清仓
 const clear = (item) => {
   item.isClear = true
   item.clearPrice = item.currentPrice
-  console.log(`利润亏损过半，清仓!`)
+  console.log(`利润亏损${(0 - clearSwitch) * 100 }%，清仓!`)
   printLog(item)
+  console.log('已清仓~~~~~~~~')
+  item.totalEarned.push(item.earned.toFixed(2) - 0)
+
   item.count = 0
   item.price = 0
   item.totalPrice = 0
@@ -16,7 +36,7 @@ const clear = (item) => {
 }
 
 const printLog = (item) => {
-  console.log(`持股价格：${item.price.toFixed(2)} 持股数量: ${item.count} 持股成本总价:${item.totalPrice.toFixed(2)} ` +
+  console.log(`序号：${item.index} ${item.title} 持股价格：${item.price.toFixed(2)} 持股数量: ${item.count} 持股成本总价:${item.totalPrice.toFixed(2)} ` +
   `市值：${(item.currentPrice * item.count).toFixed(2)} 当前价：${item.currentPrice} 盈利额：${item.earned.toFixed(2)} ` + 
   `盈利百分比：${(item.earnedPercent * 100).toFixed(2)}% ` +
   `涨幅${ item.historyPrice === 0 ? 0 : ((item.currentPrice - item.historyPrice) / item.historyPrice * 100).toFixed(2)}%`)
@@ -55,7 +75,7 @@ const logCategory = (item) => {
   if (item.isClear) {
     return
   }
-  console.log(`\n股票代码：${item.code} 趋势描述：${item.title}`)  
+  console.log(`\n股票代码：${item.code} 趋势描述：${item.title} 交易天数：${item.list.length}`)  
 }
 
 //日志
@@ -68,8 +88,8 @@ const logList = (item) => {
 
 //交易
 const computed = (item, currentPrice) => {
-    //清仓后，如果价格回升，超过清仓时的价格5%，则再次买进
-    if (item.clearPrice !== 0 && (currentPrice - item.clearPrice) / item.clearPrice > 0.05) {
+    //清仓后，如果价格回升，超过清仓时的价格n%，则再次买进
+    if (item.clearPrice !== 0 && (currentPrice - item.clearPrice) / item.clearPrice > addSwitch) {
       console.log('清仓后再次买入！因为价格回升，且超过清仓时价格的5%。')
       item.isClear = false
       item.price = currentPrice
@@ -111,15 +131,15 @@ const computed = (item, currentPrice) => {
     item.currentPrice = currentPrice
 
     //盈利额
-    item.earned = (item.currentPrice - item.price) * item.count
+    item.earned = ((item.currentPrice - item.price) * item.count).toFixed(2) - 0
 
     //盈利百分百
     item.earnedPercent = (item.earned / item.totalPrice).toFixed(4) - 0
 
     //盈利大于200时，把利润保存起来做参考，以后如果利润亏损过半，则清仓
     if (item.stopReferenceEarned === 0 && item.earned >= 200) {
-      item.stopReferenceEarned = item.earned
-    } else if (item.stopReferenceEarned >= 200 && ((item.earned - item.stopReferenceEarned) / item.stopReferenceEarned) <= -0.5) {
+      item.stopReferenceEarned = item.earned.toFixed(2) - 0
+    } else if (item.stopReferenceEarned >= 200 && ((item.earned - item.stopReferenceEarned) / item.stopReferenceEarned) <= clearSwitch) {
       //如果是首次买入，则不盈利不清仓，死磕到底
       if (item.earned < 90 && (item.totalPrice < 5000 || item.count === 100)) {
 
@@ -127,7 +147,10 @@ const computed = (item, currentPrice) => {
         clear(item)
       }
     } else if (item.earned >= 200) {
-      item.stopReferenceEarned = item.earned
+      //已经利润最高价位参考
+      if (item.earned > item.stopReferenceEarned) {
+        item.stopReferenceEarned = item.earned.toFixed(2) - 0
+      }
     }
 
     //加仓
@@ -143,8 +166,17 @@ const dealAll = () => {
   for (let i = 0; i < data.length; i++) {
     logCategory(data[i])
     for (let j = 0; j < data[i].list.length; j++) {
+      data[i].index++
       computed(data[i], data[i].list[j])
       logList(data[i])
+      if (j === data[i].list.length - 1) {
+        if (data[i].count > 0) {
+          data[i].totalEarned.push(data[i].earned.toFixed(2) - 0)
+        }
+        let itemTotal = data[i].totalEarned.reduce((total, item) => total + item, 0)
+        console.log(`单支股票总盈利：${itemTotal}, 详情:`, data[i].totalEarned)
+        total.push(itemTotal)
+      }
     }
   }
 }
@@ -164,17 +196,60 @@ const formatData = () => {
       isClear: false,
       isFirst: true,
       clearPrice: 0,
+      totalEarned: [],
+      index: 0
     }
     data[i] = {...data[i], ...init }
   }
 }
 
-formatData()
+if (true) {
+  formatData()
+  dealAll()
+} else {
+  const run = (res, item) => {
+    data = []
+    data.push({
+      list: res.data.klines.map(item => item.split(',')[2] - 0),
+      ...item
+    })
+    formatData()
+    dealAll()
+  }
+  
+  
+  
+  window.jQuery1124037335422142383856_1588576042344 =  (res => {
+    let item = {
+      code: '002410',
+      title: "广联达（2019-11-05~2020-04-30）收盘价", 
+    }
+    run(res, item)
+  })
+  
+  
+  window.jQuery112408434225517182148_1588578309782 = (res => {
+    let item = {
+      code: '000596',
+      title: "古井贡酒（2019-11-05~2020-04-30）收盘价",
+    }
+    run(res, item)
+  })
+  
+  window.jQuery112407300319671293349_1588580618083 = (res => {
+    let item = {
+      code: '600703',
+      title: "三安光电（2019-11-05~2020-04-30）收盘价",
+    }
+    run(res, item)
+  })  
+}
 
-dealAll()
-
-
-
+setTimeout(() => {
+  let sum = total.reduce((total, item) => total + item, 0)
+  console.log(`\n总盈利：${sum}， 详细:`, total)
+  //console.log(JSON.stringify(strArr, null, 2))
+}, 10000)
 
 
 

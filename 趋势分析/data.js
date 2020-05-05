@@ -7,7 +7,7 @@ let data = [
 //   totalPrice: 0,  //持股成本总价
 //   currentPrice: 0, //当前价
 //   earned: 0,      //盈利额
-//   earnedPercent: 0,  //盈利百分百
+//   earnedPercent: 0,  //盈利百分比
 //   stopReferenceEarned: 0, //盈利额止损参考
 //   isClear: false,    //是否已清仓
 //   isFirst: true,      //是否是刚建仓，从未加过仓

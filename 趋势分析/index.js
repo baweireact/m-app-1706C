@@ -226,7 +226,7 @@ Object.assign(myAction, {
           }
           let itemTotal = data[i].stageEarnedArr.reduce((total, item) => total + item, 0)
           console.log(`单支股票总盈利：${itemTotal}, 详情:`, data[i].stageEarnedArr)
-          total.push(itemTotal)
+          total.push({ earend: itemTotal, title: data[i].title})
         }
       }
     }
@@ -261,112 +261,88 @@ Object.assign(myAction, {
   }
 })
 
-if (false) {
-  myAction.formatData()
-  myAction.dealAll()
-} else {
-  const run = (res, item) => {
+let getDataIndex = 0
+
+//优化爬取过程
+Object.assign(myAction, {
+  run(res) {
     data = []
+
+    let item = {
+      code: res.data.code,
+      title: res.data.name, 
+    }
+
     data.push({
       list: res.data.klines.map(item => item.split(',')[2] - 0),
       ...item
     })
     myAction.formatData()
     myAction.dealAll()
+  },
+  getData(url) {
+    var script = document.createElement('script');
+    script.src = url
+    document.head.appendChild(script);
+  },
+  mapUrl: async () => {
+    myAction.getData(urlData[getDataIndex])
+    await new Promise((resolve) => {
+      window.callback = (res) => {
+        getDataIndex++
+        myAction.run(res)
+        resolve(true)
+      }
+    })
+    if (getDataIndex < urlData.length) {
+      myAction.mapUrl()
+    } else {
+      let sum = total.reduce((total, item) => total + item.earend, 0)
+      
+      console.log(`\n总盈利：${sum}， 详细:`, total.map(item => `${item.title}:${item.earend}`).join('，'))
+    
+      let buyUseMoney =  buyUseMoneyArr.reduce((total, item) => total + item, 0)
+      console.log(`总共花了多少钱:${buyUseMoney}，收益率:${(sum / buyUseMoney * 100).toFixed(2) - 0}%，加仓次数:${addCount}, 花销详情：`, buyUseMoneyArr)
+      //打印交易单数组
+      //console.log(JSON.stringify(dealingSlipArr, null, 2))
+
+      console.log('结束', getDataIndex)
+
+    }
+  },
+  mapUrlFast() {
+    window.callback = (res) => {
+      getDataIndex++
+      myAction.run(res)
+    }
+    for(let i = 0; i < urlData.length; i++) {
+      myAction.getData(urlData[i])
+    }
+    let timer = setInterval(() => {
+      if (getDataIndex === urlData.length) {
+        let sum = total.reduce((total, item) => total + item.earend, 0)
+        console.log(`\n总盈利：${sum}， 详细:`, total)
+      
+        let buyUseMoney =  buyUseMoneyArr.reduce((total, item) => total +item, 0)
+        console.log(`总共花了多少钱:${buyUseMoney}，收益率:${(sum / buyUseMoney * 100).toFixed(2) - 0}%，加仓次数:${addCount}, 花销详情：`, buyUseMoneyArr)
+        //打印交易单数组
+        //console.log(JSON.stringify(dealingSlipArr, null, 2))
+  
+        console.log('结束', getDataIndex)
+        clearInterval(timer)
+      }
+    }, 100);
   }
-  
-  window.jQuery1124037335422142383856_1588576042344 =  (res => {
-    let item = {
-      code: '002410',
-      title: "广联达", 
-    }
-    run(res, item)
-  })
-  
-  
-  // window.jQuery112408434225517182148_1588578309782 = (res => {
-  //   let item = {
-  //     code: '000596',
-  //     title: "古井贡酒",
-  //   }
-  //   run(res, item)
-  // })
-  
-  window.jQuery112407300319671293349_1588580618083 = (res => {
-    let item = {
-      code: '600703',
-      title: "三安光电",
-    }
-    run(res, item)
-  })  
-  window.jQuery112406343907169225547_1588662679491 = (res => {
-    let item = {
-      code: '601012',
-      title: "隆基股份",
-    }
-    run(res, item)
-  }) 
+})
 
-  window.jQuery1124003676691100951901_1588662835275 = (res => {
-    let item = {
-      code: '000651',
-      title: "格力电器",
-    }
-    run(res, item)
-  }) 
-  window.jQuery112409466079517761772_1588663058423 = (res => {
-    let item = {
-      code: '000538',
-      title: "云南白药",
-    }
-    run(res, item)
-  }) 
-  window.jQuery1124015182782587003785_1588663208759 = (res => {
-    let item = {
-      code: '600036',
-      title: "招商银行",
-    }
-    run(res, item)
-  })
-  window.jQuery1124013991191548816073_1588663341426 = (res => {
-    let item = {
-      code: '601236',
-      title: "红塔证券",
-    }
-    run(res, item)
-  })
-  window.jQuery112409482887196527332_1588663458002 = (res => {
-    let item = {
-      code: '600030',
-      title: "中信证券",
-    }
-    run(res, item)
-  })
-  window.jQuery112408274848054358503_1588663715971 = (res => {
-    let item = {
-      code: '600009',
-      title: "上海机场",
-    }
-    run(res, item)
-  })
-  window.jQuery112409768355240952085_1588666530010 = (res => {
-    let item = {
-      code: '002223',
-      title: "鱼跃医疗",
-    }
-    run(res, item)
-  })
+myAction.mapUrl()
+//myAction.mapUrlFast()
+
+
+if (false) {
+  myAction.formatData()
+  myAction.dealAll()
 }
-
-setTimeout(() => {
-  let sum = total.reduce((total, item) => total + item, 0)
-  console.log(`\n总盈利：${sum}， 详细:`, total)
-
-  let buyUseMoney =  buyUseMoneyArr.reduce((total, item) => total +item, 0)
-  console.log(`总共花了多少钱:${buyUseMoney}，收益率:${(sum / buyUseMoney * 100).toFixed(2) - 0}%，加仓次数:${addCount}, 花销详情：`, buyUseMoneyArr)
-  //打印交易单数组
-  //console.log(JSON.stringify(dealingSlipArr, null, 2))
-}, 1000)
 
 
 

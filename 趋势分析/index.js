@@ -8,7 +8,7 @@ let clearSwitch = 0.2
 let total = []
 
 //单次交易在多少钱左右
-let singleMoney = 5000
+let singleMoney = 7000
 
 //每次买入花了多少钱
 let buyUseMoneyArr = []
@@ -33,6 +33,7 @@ Object.assign(myAction, {
       return
     }
     myAction.printLog(item)
+    item.haveStockDay++
   },
   //分类日志
   logCategory(item) {
@@ -46,7 +47,7 @@ Object.assign(myAction, {
     console.log = (function(oriLogFunc){
       return function(str)
       {
-        //dealingSlipArr.push(str)
+        dealingSlipArr.push(str)
         oriLogFunc.call(console, str);
       }
     })(console.log);
@@ -225,8 +226,8 @@ Object.assign(myAction, {
             data[i].stageEarnedArr.push(data[i].earned.toFixed(2) - 0)
           }
           let itemTotal = data[i].stageEarnedArr.reduce((total, item) => total + item, 0)
-          console.log(`单支股票总盈利：${itemTotal}, 详情:`, data[i].stageEarnedArr)
-          total.push({ earend: itemTotal, title: data[i].title})
+          console.log(`单支股票总盈利：${itemTotal}, 持股天数：${data[i].haveStockDay} 详情:`, data[i].stageEarnedArr)
+          total.push({ earend: itemTotal, title: data[i].title, haveStockDay: data[i].haveStockDay})
         }
       }
     }
@@ -254,7 +255,8 @@ Object.assign(myAction, {
         isFirst: true,    //是否是刚建仓，从未加过仓
         clearPrice: 0,    //清仓价格
         stageEarnedArr: [],  //阶段盈利数组，每次清仓时添加一个，跑完一支股票的所有数据，最新的盈亏也会添加进去
-        clearCount: 0, //清仓数
+        clearCount: 0,    //清仓数
+        haveStockDay: 0,  //持股天数
       }
       data[i] = {...data[i], ...init }
     }
@@ -299,7 +301,7 @@ Object.assign(myAction, {
     } else {
       let sum = total.reduce((total, item) => total + item.earend, 0)
       
-      console.log(`\n总盈利：${sum}， 详细:`, total.map(item => `${item.title}:${item.earend}`).join('，'))
+      console.log(`\n总盈利：${sum}， 详细:`, total.map(item => `${item.title}(持股天数：${item.haveStockDay}):${item.earend}`).join('，'))
     
       let buyUseMoney =  buyUseMoneyArr.reduce((total, item) => total + item, 0)
       console.log(`总共花了多少钱:${buyUseMoney}，收益率:${(sum / buyUseMoney * 100).toFixed(2) - 0}%，加仓次数:${addCount}, 花销详情：`, buyUseMoneyArr)
@@ -332,9 +334,28 @@ Object.assign(myAction, {
         clearInterval(timer)
       }
     }, 100);
+  },
+  unique() {      
+    var res = [];      
+    var json = {};      
+    for(var i = 0; i < this.length; i++){      
+        if(!json[this[i]]){      
+            res.push(this[i]);      
+            json[this[i]] = 1;      
+        } else {
+          console.log(`有重复的url：${this[i]}`)
+          debugger
+        }      
+    }      
+    return res;      
+  },
+  formatUrlData() {
+    urlData = myAction.unique.apply(urlData)
   }
 })
 
+//myAction.initLog()
+myAction.formatUrlData()
 myAction.mapUrl()
 //myAction.mapUrlFast()
 

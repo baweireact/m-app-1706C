@@ -20,7 +20,7 @@ class More extends Component {
   render() {
     let { list } = this.props
     let listDom = list.map(item => (
-      <Item item={item}></Item>
+      <Item item={item} key={item.id}></Item>
     ))
     return (
       <div className="m-wrap">

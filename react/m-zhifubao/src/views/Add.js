@@ -43,10 +43,10 @@ class Add extends Component {
   render() {
     let { list } = this.props
     let selectedDom = list.filter(item => item.selected).map(item => (
-      <Item type="delete" item={item} onDelete={this.handleDelete.bind(this)}></Item>
+      <Item key={item.id} type="delete" item={item} onDelete={this.handleDelete.bind(this)}></Item>
     ))
     let unselectedDom = list.filter(item => !item.selected).map(item => (
-      <Item type="add" item={item} onAdd={this.handleAdd.bind(this)}></Item>
+      <Item key={item.id} type="add" item={item} onAdd={this.handleAdd.bind(this)}></Item>
     ))
     return (
       <div className="m-wrap">

@@ -19,7 +19,7 @@ class Home extends Component {
   render() {
     let { list } = this.props
     let listDom = list.filter(item => item.selected).slice(0, 11).map(item => (
-      <Item item={item}></Item>
+      <Item item={item} key={item.id}></Item>
     ))
     return (
       <div className="m-main">

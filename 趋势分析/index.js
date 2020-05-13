@@ -10,11 +10,18 @@ let total = []
 //单次交易在多少钱左右
 let singleMoney = 7000
 
-//每次买入花了多少钱
-let buyUseMoneyArr = []
+//单支股票平均持仓保存到这个数组
+let totalHaveStockPriceArr = []
 
 //加仓次数
 let addCount = 0
+
+//是否开始打印
+let isStartLog = false
+
+//是否打印详情
+let isPrintDetail = true
+
 
 let myAction = {}
 
@@ -26,6 +33,7 @@ Object.assign(myAction, {
     `市值：${(item.currentPrice * item.count).toFixed(2)} 当前价：${item.currentPrice} 盈利额：${item.earned.toFixed(2)} ` + 
     `盈利百分比：${(item.earnedPercent * 100).toFixed(2)}% ` +
     `涨幅${ item.historyPrice === 0 ? 0 : ((item.currentPrice - item.historyPrice) / item.historyPrice * 100).toFixed(2)}%`)
+    item.totalHaveStockPrice += item.totalPrice.toFixed(2) - 0
   },
   //交易日志
   logList(item) {
@@ -45,10 +53,17 @@ Object.assign(myAction, {
   //重写console.log 可以把交易单输出到数组
   initLog() {
     console.log = (function(oriLogFunc){
-      return function(str)
-      {
-        dealingSlipArr.push(str)
-        oriLogFunc.call(console, str);
+      return function() {
+        //dealingSlipArr.push(arguments)
+        if (isPrintDetail) {
+          isStartLog = true
+        }
+        if (arguments[0].indexOf('以下是分析结果') >= 0) {
+          isStartLog = true
+        }
+        if (isStartLog) {
+          oriLogFunc.apply(console, arguments);
+        }
       }
     })(console.log);
   }
@@ -86,8 +101,8 @@ Object.assign(myAction, {
     item.price = item.totalPrice / item.count
     item.earnedPercent = (item.earned / item.totalPrice).toFixed(4) - 0
     console.log(`加仓！数量:${count}`)
-    buyUseMoneyArr.push((count * item.currentPrice).toFixed(2) - 0)
     addCount++
+    item.addCount++
   },
   //如果加仓后盈利依然大于10%，则加仓，主要是防止加仓后跌停出现亏损，总市值控制在5万以内
   isNeedAdd(item) {
@@ -155,8 +170,6 @@ Object.assign(myAction, {
       //持股总价
       item.totalPrice = item.price * item.count
 
-      buyUseMoneyArr.push(item.totalPrice.toFixed(2) - 0)
-
       item.isFirst = false
     }
 
@@ -212,6 +225,10 @@ Object.assign(myAction, {
       myAction.addFn(item)
     }
 
+    if ((alreadyEarned * clearSwitch) + item.earned < -1000) {
+      item.isStop = true
+    }
+
   },
   //遍历全部
   dealAll() {
@@ -219,15 +236,19 @@ Object.assign(myAction, {
       myAction.logCategory(data[i])
       for (let j = 0; j < data[i].list.length; j++) {
         data[i].index++
+
         myAction.computed(data[i], data[i].list[j])
         myAction.logList(data[i])
-        if (j === data[i].list.length - 1) {
+        if (j === data[i].list.length - 1 || data[i].isStop) {
           if (data[i].count > 0) {
             data[i].stageEarnedArr.push(data[i].earned.toFixed(2) - 0)
           }
           let itemTotal = data[i].stageEarnedArr.reduce((total, item) => total + item, 0)
-          console.log(`单支股票总盈利：${itemTotal}, 持股天数：${data[i].haveStockDay} 详情:`, data[i].stageEarnedArr)
-          total.push({ earend: itemTotal, title: data[i].title, haveStockDay: data[i].haveStockDay})
+          let averageStockPrice = (data[i].totalHaveStockPrice / data[i].haveStockDay).toFixed(2) - 0
+          console.log(`单支股票总盈利：${itemTotal}, 持股天数：${data[i].haveStockDay},平均持仓：${ averageStockPrice } 详情:`, data[i].stageEarnedArr)
+          total.push({...data[i], earend: itemTotal, averageStockPrice } )
+          totalHaveStockPriceArr.push(averageStockPrice)
+          break
         }
       }
     }
@@ -256,7 +277,10 @@ Object.assign(myAction, {
         clearPrice: 0,    //清仓价格
         stageEarnedArr: [],  //阶段盈利数组，每次清仓时添加一个，跑完一支股票的所有数据，最新的盈亏也会添加进去
         clearCount: 0,    //清仓数
+        addCount: 0,      //加仓次数
         haveStockDay: 0,  //持股天数
+        totalHaveStockPrice: 0, //持股总成品累加，用于算平均持仓
+        isStop: false,   //是终止单支股票后续的交易
       }
       data[i] = {...data[i], ...init }
     }
@@ -267,6 +291,7 @@ let getDataIndex = 0
 
 //优化爬取过程
 Object.assign(myAction, {
+  //正常跑一遍数据
   run(res) {
     data = []
 
@@ -282,17 +307,43 @@ Object.assign(myAction, {
     myAction.formatData()
     myAction.dealAll()
   },
+  //移动着跑数据
+  moveRun(res) {
+    let list = res.data.klines.map(item => item.split(',')[2] - 0)
+    for (let i = 0; i < list.length / 2; i++) {
+      this.stepRun(res, list.slice(i, i + 60))
+    }
+  },
+  stepRun(res, list) {
+    data = []
+
+    let item = {
+      code: res.data.code,
+      title: res.data.name, 
+    }
+
+    data.push({
+      list,
+      ...item
+    })
+    myAction.formatData()
+    myAction.dealAll()
+  },
   getData(url) {
     var script = document.createElement('script');
     script.src = url
     document.head.appendChild(script);
   },
+  //根据url爬取数据，全部统计完数据后，打印分析结果
   mapUrl: async () => {
     myAction.getData(urlData[getDataIndex])
     await new Promise((resolve) => {
       window.callback = (res) => {
         getDataIndex++
+        //正常跑数据
         myAction.run(res)
+        //移动这跑数据
+        //myAction.moveRun(res)
         resolve(true)
       }
     })
@@ -301,15 +352,26 @@ Object.assign(myAction, {
     } else {
       let sum = total.reduce((total, item) => total + item.earend, 0)
       
-      console.log(`\n总盈利：${sum}， 详细:`, total.map(item => `${item.title}(持股天数：${item.haveStockDay}):${item.earend}`).join('，'))
-    
-      let buyUseMoney =  buyUseMoneyArr.reduce((total, item) => total + item, 0)
-      console.log(`总共花了多少钱:${buyUseMoney}，收益率:${(sum / buyUseMoney * 100).toFixed(2) - 0}%，加仓次数:${addCount}, 花销详情：`, buyUseMoneyArr)
+      //“以下是分析结果”文案不要改，作为是否打印详情的标识位
+      console.log('以下是分析结果')
+      console.log(`总盈利：${sum},  操作的股票(${total.length}支):${total.map(item => `${item.title}`).join(' ')}` )
+      console.log(`排序后的详细盈利记录:`)
+      //赚钱的股票
+      let earnedDetail = total.sort((a, b) => b.earend - a.earend).filter(item => item.earend > 0).map(item => `${item.title}(持股天数：${item.haveStockDay}, ` + 
+      `平均持仓：${item.averageStockPrice},清仓次数：${item.clearCount},加仓次数：${item.addCount},收益率：${(item.earend / item.averageStockPrice * 100).toFixed(2)}%):${item.earend}`).join('，\n')
+      console.log(`%c${earnedDetail}`, 'color:red;')
+
+      //赔钱的股票
+      let loseMoneyDetail = total.sort((a, b) => b.earend - a.earend).filter(item => item.earend <= 0).map(item => `${item.title}(持股天数：${item.haveStockDay}, ` + 
+      `平均持仓：${item.averageStockPrice},清仓次数：${item.clearCount},加仓次数：${item.addCount},收益率：${(item.earend / item.averageStockPrice * 100).toFixed(2)}%):${item.earend}`).join('，\n')
+      console.log(`%c${loseMoneyDetail}`, 'color:green;' )
+
+      let buyUseMoney =  totalHaveStockPriceArr.reduce((total, item) => total + item, 0).toFixed(2) - 0
+      console.log(`总共花了多少钱:${buyUseMoney}，收益率:${(sum / buyUseMoney * 100).toFixed(2) - 0}%，加仓次数:${addCount}`)
       //打印交易单数组
       //console.log(JSON.stringify(dealingSlipArr, null, 2))
 
-      console.log('结束', getDataIndex)
-
+      console.log(`结束!`)
     }
   },
   mapUrlFast() {
@@ -325,8 +387,8 @@ Object.assign(myAction, {
         let sum = total.reduce((total, item) => total + item.earend, 0)
         console.log(`\n总盈利：${sum}， 详细:`, total)
       
-        let buyUseMoney =  buyUseMoneyArr.reduce((total, item) => total +item, 0)
-        console.log(`总共花了多少钱:${buyUseMoney}，收益率:${(sum / buyUseMoney * 100).toFixed(2) - 0}%，加仓次数:${addCount}, 花销详情：`, buyUseMoneyArr)
+        let buyUseMoney =  totalHaveStockPriceArr.reduce((total, item) => total + item, 0)
+        console.log(`总共花了多少钱:${buyUseMoney}，收益率:${(sum / buyUseMoney * 100).toFixed(2) - 0}%，加仓次数:${addCount}`)
         //打印交易单数组
         //console.log(JSON.stringify(dealingSlipArr, null, 2))
   
@@ -335,6 +397,7 @@ Object.assign(myAction, {
       }
     }, 100);
   },
+  //去重
   unique() {      
     var res = [];      
     var json = {};      
@@ -354,7 +417,7 @@ Object.assign(myAction, {
   }
 })
 
-//myAction.initLog()
+myAction.initLog()
 myAction.formatUrlData()
 myAction.mapUrl()
 //myAction.mapUrlFast()

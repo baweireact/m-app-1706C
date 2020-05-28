@@ -20,8 +20,12 @@ let addCount = 0
 let isStartLog = false
 
 //是否打印详情
-let isPrintDetail = true
+let isPrintDetail = false
 
+//分析前多少天的数据，总共120天
+let analyseDayCount = 0
+
+let getDataIndex = 0
 
 let myAction = {}
 
@@ -127,10 +131,16 @@ Object.assign(myAction, {
     //曾经挣的钱
     let alreadyEarned = item.stageEarnedArr.reduce((total, item) => total + item, 0)
 
+    let isLastAlreadyEarned = true
+    //看一下最后三次的盈利
+    if (item.stageEarnedArr.length > 3) {
+      isLastAlreadyEarned = item.stageEarnedArr.slice(item.stageEarnedArr.length - 3).reduce((total, item) => total + item, 0) > 0
+    }
+
     //清仓数大于0, 之后的买入要格外小心，曾经挣的钱能支持一次跌停  && item.index - item.historyClearIndex > 20
     if (item.clearCount > 0 && item.count === 0) {
       //曾经挣的钱能支持一次跌停，且单价小于100,需要人工干预,再次买入价格相对于清仓价格，浮动大于5%
-      if (currentPrice * 0.1 < alreadyEarned && currentPrice < 100 && Math.abs((currentPrice - item.clearPrice) / item.clearPrice) > 0.05) {
+      if (currentPrice * 0.1 < alreadyEarned && currentPrice < 100 && Math.abs((currentPrice - item.clearPrice) / item.clearPrice) > 0.05 && isLastAlreadyEarned > 0) {
         console.log('清仓后再次买入！曾经挣的钱能支持一次跌停，且单价小于100，再次买入价格相对于清仓价格，浮动大于5%')
         item.isClear = false
         item.price = currentPrice
@@ -185,7 +195,7 @@ Object.assign(myAction, {
     item.earnedPercent = (item.earned / item.totalPrice).toFixed(4) - 0
 
     //根据序号打断点
-    // if (item.index === 59) {
+    // if (item.index === 82) {
     //   debugger
     // }
 
@@ -224,22 +234,20 @@ Object.assign(myAction, {
       myAction.logList(item)
       myAction.addFn(item)
     }
-
-    if ((alreadyEarned * clearSwitch) + item.earned < -1000) {
-      item.isStop = true
-    }
-
   },
   //遍历全部
-  dealAll() {
+  dealAll(day = 0) {
     for (let i = 0; i < data.length; i++) {
       myAction.logCategory(data[i])
-      for (let j = 0; j < data[i].list.length; j++) {
+      data[i].index = day
+      for (let j = day; j < data[i].list.length; j++) {
         data[i].index++
-
+        if (data[i].list[0] > 100) {
+          break;
+        }
         myAction.computed(data[i], data[i].list[j])
         myAction.logList(data[i])
-        if (j === data[i].list.length - 1 || data[i].isStop) {
+        if (j === data[i].list.length - 1) {
           if (data[i].count > 0) {
             data[i].stageEarnedArr.push(data[i].earned.toFixed(2) - 0)
           }
@@ -249,6 +257,28 @@ Object.assign(myAction, {
           total.push({...data[i], earend: itemTotal, averageStockPrice } )
           totalHaveStockPriceArr.push(averageStockPrice)
           break
+        }
+      }
+    }
+  },
+  //使用前三个月的数据做分析，决定是否可以买
+  analyseData(day) {
+    for (let i = 0; i < data.length; i++) {
+      for (let j = 0; j < data[i].list.length - day; j++) {
+        data[i].index++
+        myAction.computed(data[i], data[i].list[j])
+        if (j === data[i].list.length - day - 1) {
+          if (data[i].count > 0) {
+            data[i].stageEarnedArr.push(data[i].earned.toFixed(2) - 0)
+          }
+          let itemTotal = data[i].stageEarnedArr.reduce((total, item) => total + item, 0)
+          let averageStockPrice = (data[i].totalHaveStockPrice / data[i].haveStockDay).toFixed(2) - 0
+          if (data[i].stageEarnedArr.length > 1 && itemTotal > 0) {
+            return true
+          }
+            
+          return false
+
         }
       }
     }
@@ -280,14 +310,11 @@ Object.assign(myAction, {
         addCount: 0,      //加仓次数
         haveStockDay: 0,  //持股天数
         totalHaveStockPrice: 0, //持股总成品累加，用于算平均持仓
-        isStop: false,   //是终止单支股票后续的交易
       }
       data[i] = {...data[i], ...init }
     }
   }
 })
-
-let getDataIndex = 0
 
 //优化爬取过程
 Object.assign(myAction, {
@@ -304,8 +331,18 @@ Object.assign(myAction, {
       list: res.data.klines.map(item => item.split(',')[2] - 0),
       ...item
     })
-    myAction.formatData()
-    myAction.dealAll()
+
+    if (analyseDayCount > 0) {
+      myAction.formatData()
+      if (myAction.analyseData(analyseDayCount)) {
+        myAction.formatData()
+        myAction.dealAll(analyseDayCount)
+      }
+    } else {
+      myAction.formatData()
+      myAction.dealAll()
+    }
+
   },
   //移动着跑数据
   moveRun(res) {
@@ -331,7 +368,7 @@ Object.assign(myAction, {
   },
   getData(url) {
     var script = document.createElement('script');
-    script.src = url
+    script.src = `http://17.push2his.eastmoney.com/api/qt/stock/kline/get?cb=callback&secid=0.${url}&ut=fa5fd1943c7b386f172d6893dbfba10b&fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57%2Cf58&klt=101&fqt=0&end=20500101&lmt=120&_=1589448975491`
     document.head.appendChild(script);
   },
   //根据url爬取数据，全部统计完数据后，打印分析结果
@@ -365,6 +402,10 @@ Object.assign(myAction, {
       let loseMoneyDetail = total.sort((a, b) => b.earend - a.earend).filter(item => item.earend <= 0).map(item => `${item.title}(持股天数：${item.haveStockDay}, ` + 
       `平均持仓：${item.averageStockPrice},清仓次数：${item.clearCount},加仓次数：${item.addCount},收益率：${(item.earend / item.averageStockPrice * 100).toFixed(2)}%):${item.earend}`).join('，\n')
       console.log(`%c${loseMoneyDetail}`, 'color:green;' )
+
+      if (totalHaveStockPriceArr.length === 0) {
+        return
+      }
 
       let buyUseMoney =  totalHaveStockPriceArr.reduce((total, item) => total + item, 0).toFixed(2) - 0
       console.log(`总共花了多少钱:${buyUseMoney}，收益率:${(sum / buyUseMoney * 100).toFixed(2) - 0}%，加仓次数:${addCount}`)
@@ -417,10 +458,68 @@ Object.assign(myAction, {
   }
 })
 
-myAction.initLog()
-myAction.formatUrlData()
-myAction.mapUrl()
+let mapUrlListIndex = 0
+
+//
+Object.assign(myAction, {
+  //根据分页股票列表，生成单支股票的爬取url列表
+  addUrlListToScript(url) {
+    var script = document.createElement('script')
+    script.src = url
+    document.head.appendChild(script);
+  },
+  //根据url爬取数据，全部统计完数据后，打印分析结果
+  // mapUrlList: async () => {
+  //   myAction.addUrlListToScript(urlListData[mapUrlListIndex])
+  //   await new Promise((resolve) => {
+  //     window.callback = (res) => {
+  //       mapUrlListIndex++
+  //       console.log(res)
+  //       urlData = [...urlData, ...res.data.diff.map(item => item.f2)]
+  //       resolve(true)
+  //     }
+  //   })
+  //   if (mapUrlListIndex < urlListData.length) {
+  //     myAction.mapUrlList()
+  //   } else {
+  //     console.log(`结束!`)
+  //   }
+  // },
+  async init() {
+    await new Promise((resolve) => {
+      let mapUrlList = async () => {
+        myAction.addUrlListToScript(urlListData[mapUrlListIndex])
+        await new Promise((resolve) => {
+          window.callback = (res) => {
+            mapUrlListIndex++
+            console.log(res)
+            urlData = [...urlData, ...res.data.diff.map(item => item.f12)]
+            resolve(true)
+          }
+        })
+        if (mapUrlListIndex < urlListData.length) {
+          mapUrlList()
+        } else {
+          console.log(`结束!`)
+          console.log(urlData)
+          resolve(true)
+        }
+      }
+      mapUrlList()
+    })
+    myAction.initLog()
+    myAction.formatUrlData()
+    myAction.mapUrl()
+  }
+})
+
+myAction.init()
+
+
+
 //myAction.mapUrlFast()
+
+
 
 
 if (false) {
